@@ -123,7 +123,7 @@
         $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
 
         $sql = "SELECT * FROM clientes
-            WHERE id LIKE '%$cliente%'
+            WHERE id LIKE '$cliente'
             OR nome LIKE '%$cliente%'
             OR cpf LIKE '%$cliente%'
             OR telefone LIKE '%$cliente%'
@@ -151,5 +151,37 @@
             exit;
         }
             
+    }
+
+    //pesquisa produto
+    if(isset($_POST['select_produto'])){
+        $produto = mysqli_real_escape_string($mysqli, trim($_POST['produto']));
+
+        $sql = "SELECT * FROM produtos
+            WHERE id LIKE '%$produto%'
+            OR nome LIKE '%$produto%'
+        ";
+        $sql_query = $mysqli->query($sql) or die("Erro na consulta! " .$mysqli->error);
+
+        if($sql_query->num_rows == 0){
+            $_SESSION['pesquisa_produto'] = [];
+            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
+            header('Location: ../paginas/produtos.php');
+            exit;
+        }else{
+            $produto = [];
+            
+            while($produtoEncontrado = $sql_query->fetch_assoc()){
+                $produto[] = $produtoEncontrado;
+            }
+
+            $_SESSION['pesquisa_produto'] = $produto;
+
+            // Marca que acabou de fazer uma pesquisa
+            $_SESSION['pesquisa_realizada'] = true;
+
+            header('Location: ../paginas/produtos.php');
+            exit;
+        }
     }
 ?>

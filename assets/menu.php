@@ -33,7 +33,7 @@
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="../paginas/add-produtos.php" class="button-menu" type="submit">
+                        <a href="../paginas/produtos.php" class="button-menu" type="submit">
                             <span class="icon"><i class="bi bi-box-seam"></i></span>
                             <span class="txt-link">Produtos</span>
                         </a>

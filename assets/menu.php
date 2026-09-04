@@ -32,6 +32,12 @@
                             <span class="txt-link">Cliente</span>
                         </a>
                     </li>
+                     <li class="item-menu">
+                        <a href="../paginas/orcamento.php" class="button-menu" type="submit">
+                            <span class="icon"><i class="bi bi-search"></i></span>
+                            <span class="txt-link">Orçamento</span>
+                        </a>
+                    </li>
                     <li class="item-menu">
                         <a href="../paginas/produtos.php" class="button-menu" type="submit">
                             <span class="icon"><i class="bi bi-box-seam"></i></span>
@@ -48,12 +54,6 @@
                         <a href="../paginas/relatorio.php" class="button-menu" type="submit">
                             <span class="icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
                             <span class="txt-link">Relatório</span>   
-                        </a>
-                    </li>
-                    <li class="item-menu">
-                        <a href="../paginas/orcamento.php" class="button-menu" type="submit">
-                            <span class="icon"><i class="bi bi-search"></i></span>
-                            <span class="txt-link">Orçamento</span>
                         </a>
                     </li>
                     <li class="item-menu">

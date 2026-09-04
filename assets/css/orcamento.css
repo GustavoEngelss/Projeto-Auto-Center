@@ -1,11 +1,20 @@
 .cabecalho-orcamento{
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     background-color: rgb(44, 43, 43);
     padding: 25px;
     color: white;
     border-bottom: 4px solid rgb(255, 89, 80);
+}
+.cabecalho-orcamento h1 {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.cabecalho-orcamento p {
+    margin: 8px 0 0;
+    font-size: 20px;
+    color: #e0e0e0;
 }
 .form-orcamento{
     max-width: 1100px;

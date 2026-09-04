@@ -184,4 +184,63 @@
             exit;
         }
     }
+
+    // pesquisa produto
+    if(isset($_POST['busca_produto'])){
+
+        $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
+        $largura = mysqli_real_escape_string($mysqli, trim($_POST['largura']));
+        $perfil = mysqli_real_escape_string($mysqli, trim($_POST['perfil']));
+        $aro = mysqli_real_escape_string($mysqli, trim($_POST['aro']));
+
+        $medida = '';
+        //salva a medida para a consulta, exemplo 175/65R14
+        if($largura != '' && $perfil != '' && $aro != ''){
+            $medida = $largura . '/' . $perfil . 'R' . $aro;
+        }
+
+        // Busca pelo ID
+        if($id != ''){
+
+            $sql = "SELECT * FROM produtos
+                    WHERE id = '$id'";
+
+        // Busca pela medida
+        } elseif($medida != ''){
+
+            $sql = "SELECT * FROM produtos
+                    WHERE nome LIKE '%$medida%'";
+
+        // Nenhum campo preenchido
+        } else {
+
+            $_SESSION['produtos'] = [];
+            $_SESSION['mensagem'] = 'Informe o código ou a medida do produto!';
+            header('Location: ../paginas/orcamento.php');
+            exit;
+        }
+
+        $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
+
+        if($sql_query->num_rows == 0){
+
+            $_SESSION['produtos'] = [];
+            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
+
+        } else {
+
+            $produto = [];
+
+            while($produtoEncontrado = $sql_query->fetch_assoc()){
+                $produto[] = $produtoEncontrado;
+            }
+
+            $_SESSION['produtos'] = $produto;
+            $_SESSION['pesquisa_realizada'] = true;
+        }
+        
+        header('Location: ../paginas/orcamento.php');
+        exit;
+    }
+
 ?>

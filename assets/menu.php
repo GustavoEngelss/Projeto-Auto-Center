@@ -7,9 +7,6 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         
-        <link rel="stylesheet" href="../css/menu.css">
-        <link rel="stylesheet" href="../css/global.css">
-
         <title>G.A Pneus</title>
     </head>
     <body class="corpo-menu">
@@ -65,6 +62,5 @@
                 </ul>
             </form>
         </nav>
-        <script src="./js/script.js"></script>
     <body> 
 </html>

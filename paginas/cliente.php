@@ -4,6 +4,18 @@
     require_once "../protec.php";
 
 ?>
+
+<?php
+    if (!isset($_SESSION['cliente_pesquisa_realizada'])) {
+
+        unset($_SESSION['cliente_busca']);
+        unset($_SESSION['busca_cliente']);
+        unset($_SESSION['cliente_pesquisado']);
+
+    }
+    unset($_SESSION['cliente_pesquisa_realizada']);
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -49,8 +61,8 @@
                 <div class="card-body">
                     <form action="../controller/acao.php" method="post">
                         <div class="mb-3 d-flex">
-                            <input type="text" name="cliente" class="form-control" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
-                            <button type="submit" name="select_cliente" class="btn btn-primary float-right ml-2">Pesquisar</button>
+                            <input type="text" name="cliente" class="form-control" value="<?= $_SESSION['busca_cliente'] ?? '' ?>" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
+                            <button type="submit" name="select_cliente" class="btn btn-primary float-right ml-2" >Pesquisar</button>
                         </div>
                     </form>
                 </div>
@@ -73,13 +85,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                                // Se a página foi aberta, limpa a pesquisa anterior
-                                if(!isset($_POST['select_cliente']) && !isset($_SESSION['pesquisa_realizada'])){
-                                    unset($_SESSION['cliente_busca']);
-                                    unset($_SESSION['cliente_pesquisado']);
-                                }
-                            ?>
                             <?php if(isset($_SESSION['cliente_busca']) && count($_SESSION['cliente_busca']) > 0):?>
                                 <?php foreach($_SESSION['cliente_busca'] as $cliente): ?>
                             <tr>

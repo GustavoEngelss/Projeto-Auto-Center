@@ -120,13 +120,15 @@
 
     //pesquisa cliente
     if(isset($_POST['select_cliente'])){
+
+        $_SESSION['cliente_pesquisa_realizada'] = true;
         $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
 
         $sql = "SELECT * FROM clientes
             WHERE id LIKE '$cliente'
             OR nome LIKE '%$cliente%'
-            OR cpf LIKE '%$cliente%'
-            OR telefone LIKE '%$cliente%'
+            OR cpf LIKE '$cliente'
+            OR telefone LIKE '$cliente'
         ";
         $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
 
@@ -188,6 +190,16 @@
     // pesquisa produto
     if(isset($_POST['busca_produto'])){
 
+        //salva os campos para deixar no input 
+        $_SESSION['busca_largura'] = $_POST['largura'] ?? '';
+        $_SESSION['busca_perfil'] = $_POST['perfil'] ?? '';
+        $_SESSION['busca_aro'] = $_POST['aro'] ?? '';
+        $_SESSION['busca_categoria'] = $_POST['categoria'] ?? '';
+        $_SESSION['busca_codigo'] = $_POST['id'] ?? '';
+        $_SESSION['busca_pagamento'] = $_POST['pagamento'] ?? '';
+        $_SESSION['busca_parcelas'] = $_POST['parcelas'] ?? '';
+
+        //pega os dados para fazer a pesquisa
         $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
         $largura = mysqli_real_escape_string($mysqli, trim($_POST['largura']));
         $perfil = mysqli_real_escape_string($mysqli, trim($_POST['perfil']));

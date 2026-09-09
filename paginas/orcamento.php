@@ -3,11 +3,27 @@
     require_once "../conexao.php";
     require_once "../protec.php";
 ?>
+
+<!--Zera a pesquisa-->
+<?php
+    if (!isset($_SESSION['pesquisa_realizada'])) {
+
+        unset($_SESSION['produtos']);
+        unset($_SESSION['busca_largura']);
+        unset($_SESSION['busca_perfil']);
+        unset($_SESSION['busca_aro']);
+        unset($_SESSION['busca_categoria']);
+        unset($_SESSION['busca_codigo']);
+        unset($_SESSION['busca_pagamento']);
+        unset($_SESSION['busca_parcelas']);
+
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -50,16 +66,16 @@
                         <div class="col-md-4">
                             <label><i class="bi bi-tag"></i> Categoria</label><br>
                             <select name="categoria" class="custom-select">
-                                <option>Selecione</option>
-                                <option>Pneus</option>
-                                <option>Peça</option>
-                                <option>Serviço</option>
+                                <option value="">Selecione</option>
+                                <option value="Pneus"<?= (($_SESSION['busca_categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
+                                <option value="Peça"<?= (($_SESSION['busca_categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
+                                <option value="Serviço"<?= (($_SESSION['busca_categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
                             </select>
                         </div>
             
                         <div class="col-md-4">
                             <label><i class="bi bi-upc-scan"></i> Código</label><br>
-                            <input name="id" class="form-control" placeholder="código do produto">
+                            <input name="id" class="form-control" placeholder="código do produto" value="<?= $_SESSION['busca_codigo'] ?? '' ?>">
                         </div>
             
                     </div>
@@ -68,40 +84,34 @@
                             <label>📏 Medida</label>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <input name="largura" type="text" class="form-control" placeholder="Largura">
+                                    <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
                                 </div>
                                 <div class="col-md-4">
-                                    <input name="perfil" type="text" class="form-control" placeholder="Perfil">
+                                    <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
                                 </div>
                                 <div class="col-md-4">
-                                    <input name="aro" type="text" class="form-control" placeholder="Aro">
+                                    <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label>Condição Pagamento</label><br>
                             <select name="pagamento" id="pagamento" class="custom-select">
-                                <option value="avista">À vista</option>
-                                <option value="pix">Pix</option>
-                                <option value="dinheiro">Dinheiro</option>
-                                <option value="credito">Crédito</option>
+                                <option value="avista"<?= (($_SESSION['busca_pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
+                                <option value="pix"<?= (($_SESSION['busca_pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
+                                <option value="dinheiro"<?= (($_SESSION['busca_pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
+                                <option value="credito"<?= (($_SESSION['busca_pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
                             </select>
 
                             <div id="parcelas-container" style="display: none;" class="mt-3">
                                 <label>Quantidade de parcelas</label>
                                 <select name="parcelas" id="parcelas" class="custom-select">
-                                    <option value="1">1x</option>
-                                    <option value="2">2x</option>
-                                    <option value="3">3x</option>
-                                    <option value="4">4x</option>
-                                    <option value="5">5x</option>
-                                    <option value="6">6x</option>
-                                    <option value="7">7x</option>
-                                    <option value="8">8x</option>
-                                    <option value="9">9x</option>
-                                    <option value="10">10x</option>
-                                    <option value="11">11x</option>
-                                    <option value="12">12x</option>
+                                    <?php for($i = 1; $i <= 12; $i++): ?>
+                                        <option value="<?= $i ?>"
+                                            <?= (($_SESSION['busca_parcelas'] ?? '') == $i) ? 'selected' : '' ?>>
+                                            <?= $i ?>x
+                                        </option>
+                                    <?php endfor; ?>
                                 </select>
                             </div>
                         </div>
@@ -163,23 +173,10 @@
                 </div>
             </div>
         </form>
-    </section>
-    <!--quando seleciona a forma de pagamento aparece para selecionar a quantidade -->
-    <script>
-        const pagamento = document.getElementById('pagamento');
-        const parcelasContainer = document.getElementById('parcelas-container');
-
-        pagamento.addEventListener('change', function() {
-
-            if(this.value === 'credito') {
-                parcelasContainer.style.display = 'block';
-            } else {
-                parcelasContainer.style.display = 'none';
-            }
-
-        });
-    </script>
-    
+    </section>    
     <script src="../assets/js/script.js"></script>
+    <?php
+        unset($_SESSION['pesquisa_realizada']);
+    ?>
 </body>
 </html>

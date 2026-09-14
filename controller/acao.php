@@ -155,38 +155,6 @@
             
     }
 
-    //pesquisa produto
-    if(isset($_POST['select_produto'])){
-        $produto = mysqli_real_escape_string($mysqli, trim($_POST['produto']));
-
-        $sql = "SELECT * FROM produtos
-            WHERE id LIKE '%$produto%'
-            OR nome LIKE '%$produto%'
-        ";
-        $sql_query = $mysqli->query($sql) or die("Erro na consulta! " .$mysqli->error);
-
-        if($sql_query->num_rows == 0){
-            $_SESSION['pesquisa_produto'] = [];
-            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
-            header('Location: ../paginas/produtos.php');
-            exit;
-        }else{
-            $produto = [];
-            
-            while($produtoEncontrado = $sql_query->fetch_assoc()){
-                $produto[] = $produtoEncontrado;
-            }
-
-            $_SESSION['pesquisa_produto'] = $produto;
-
-            // Marca que acabou de fazer uma pesquisa
-            $_SESSION['pesquisa_realizada'] = true;
-
-            header('Location: ../paginas/produtos.php');
-            exit;
-        }
-    }
-
     // pesquisa produto
     if(isset($_POST['busca_produto'])){
 
@@ -194,16 +162,19 @@
         $_SESSION['busca_largura'] = $_POST['largura'] ?? '';
         $_SESSION['busca_perfil'] = $_POST['perfil'] ?? '';
         $_SESSION['busca_aro'] = $_POST['aro'] ?? '';
+        $_SESSION['busca_pesquisa'] = $_POST['pesquisa'] ?? '';
         $_SESSION['busca_categoria'] = $_POST['categoria'] ?? '';
         $_SESSION['busca_codigo'] = $_POST['id'] ?? '';
         $_SESSION['busca_pagamento'] = $_POST['pagamento'] ?? '';
         $_SESSION['busca_parcelas'] = $_POST['parcelas'] ?? '';
+
 
         //pega os dados para fazer a pesquisa
         $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
         $largura = mysqli_real_escape_string($mysqli, trim($_POST['largura']));
         $perfil = mysqli_real_escape_string($mysqli, trim($_POST['perfil']));
         $aro = mysqli_real_escape_string($mysqli, trim($_POST['aro']));
+        $pesquisa = mysqli_real_escape_string($mysqli, trim($_POST['pesquisa']));
 
         $medida = '';
         //salva a medida para a consulta, exemplo 175/65R14
@@ -222,7 +193,11 @@
 
             $sql = "SELECT * FROM produtos
                     WHERE nome LIKE '%$medida%'";
+        }elseif ($pesquisa != ''){
 
+            $sql = "SELECT * FROM produtos
+                WHERE nome like '%$pesquisa%'";
+        
         // Nenhum campo preenchido
         } else {
 

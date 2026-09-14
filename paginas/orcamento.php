@@ -3,7 +3,6 @@
     require_once "../conexao.php";
     require_once "../protec.php";
 ?>
-
 <!--Zera a pesquisa-->
 <?php
     if (!isset($_SESSION['pesquisa_realizada'])) {
@@ -41,92 +40,152 @@
     <section class="conteudo">
 
         <header class="cabecalho-orcamento">
+
             <h1>Orçamento</h1>
             <p>Busque o produto para montar o orçamento</p>
+
         </header>
+
         <form action="../controller/acao.php" method="post">
+
             <div class="container mt-4">
+
                 <!--Mensagem de erro ou sucesso-->
                 <?php if(isset($_SESSION['mensagem'])): ?>
 
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
+
                         <?= $_SESSION['mensagem']; ?>
 
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+
                     </div>
 
                     <?php unset($_SESSION['mensagem']); ?>
 
                 <?php endif; ?>
+
                 <!--tipo de produto-->
                 <div class="card">
+
                     <div class="card-body row">
+
                         <div class="col-md-4">
+
                             <label><i class="bi bi-tag"></i> Categoria</label><br>
-                            <select name="categoria" class="custom-select">
+
+                            <select name="categoria" id="categoria" class="custom-select">
+
                                 <option value="">Selecione</option>
+
                                 <option value="Pneus"<?= (($_SESSION['busca_categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
+
                                 <option value="Peça"<?= (($_SESSION['busca_categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
+
                                 <option value="Serviço"<?= (($_SESSION['busca_categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
+
                             </select>
+
                         </div>
             
                         <div class="col-md-4">
+
                             <label><i class="bi bi-upc-scan"></i> Código</label><br>
+
                             <input name="id" class="form-control" placeholder="código do produto" value="<?= $_SESSION['busca_codigo'] ?? '' ?>">
+
                         </div>
             
                     </div>
+
                     <div class="card-body row">
+
                         <div class="col-md-6">
-                            <label>📏 Medida</label>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
-                                </div>
-                                <div class="col-md-4">
-                                    <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
-                                </div>
-                                <div class="col-md-4">
-                                    <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
+
+                            <label>Pesquisa</label>
+                            <div id="medida">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="row" id="pesquisa" style="display: none;">
+
+                                <div class="col-md-9">
+                                    <input type="text" name="pesquisa" class="form-control" value="<?= $_SESSION['buscar_pesquisa'] ?? '' ?>" placeholder="Digite o nome do produto...">
+                                </div>
+
+                            </div>
+                            
                         </div>
+                        
                         <div class="col-md-6">
+
                             <label>Condição Pagamento</label><br>
+
                             <select name="pagamento" id="pagamento" class="custom-select">
+
                                 <option value="avista"<?= (($_SESSION['busca_pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
+
                                 <option value="pix"<?= (($_SESSION['busca_pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
+
                                 <option value="dinheiro"<?= (($_SESSION['busca_pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
+
                                 <option value="credito"<?= (($_SESSION['busca_pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
+
                             </select>
 
                             <div id="parcelas-container" style="display: none;" class="mt-3">
+
                                 <label>Quantidade de parcelas</label>
+
                                 <select name="parcelas" id="parcelas" class="custom-select">
+
                                     <?php for($i = 1; $i <= 12; $i++): ?>
+                                        
                                         <option value="<?= $i ?>"
                                             <?= (($_SESSION['busca_parcelas'] ?? '') == $i) ? 'selected' : '' ?>>
                                             <?= $i ?>x
                                         </option>
+
                                     <?php endfor; ?>
+
                                 </select>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
                 <br>
+
                 <!--Resultado da pesquisa-->
+
                 <div class="card">
+
                     <div class="card-header">
                         <h4>Produtos Encontrados</h4>
                     </div>
+
                     <div class="card_body">
+
                         <table class="table table-hover">
+                            
                             <thead>
                             <tr>
+                                
                                 <th>Código</th>
                                 <th>Nome</th>
                                 <th>Valor</th>
@@ -135,6 +194,7 @@
                             </tr>
                             </thead>
                             <tbody>
+
                                 <?php
                                     // Se a página foi aberta, limpa a pesquisa anterior
                                     if(!isset($_POST['select_cliente']) && !isset($_SESSION['pesquisa_realizada'])){

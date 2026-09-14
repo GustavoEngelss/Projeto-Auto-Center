@@ -21,6 +21,29 @@ if (pagamento && parcelasContainer) {
     verificarPagamento();
 }
 
+//quando selecionar produtos ou peças vai mudar a forma de pesquisa
+const categoria = document.getElementById('categoria');
+const pesquisa = document.getElementById('pesquisa');
+const medida = document.getElementById('medida');
+
+if(categoria && pesquisa && medida) {
+
+    function mododepesquisa(){
+
+        if(categoria.value === 'Peça' || categoria.value === 'Serviço') {
+
+            pesquisa.style.display = 'block';
+            medida.style.display = 'none'
+
+        }else {
+            pesquisa.style.display = 'none';
+            medida.style.display = 'block'
+        }
+    }
+    categoria.addEventListener('change', mododepesquisa);
+    mododepesquisa();
+}
+
 /*Script do menu*/
 var menuItem = document.querySelectorAll('.item-menu')
 function selectLinck(){

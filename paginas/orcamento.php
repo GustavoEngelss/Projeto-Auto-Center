@@ -188,9 +188,10 @@
                                 
                                 <th>Código</th>
                                 <th>Nome</th>
+                                <th>Unidades</th>
                                 <th>Valor</th>
-                                <th>condição</th>
                                 <th></th>
+
                             </tr>
                             </thead>
                             <tbody>

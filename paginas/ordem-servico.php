@@ -23,9 +23,11 @@
         <header class="cabecalho-servicos">
 
             <h1>Ordem de Serviço</h1>
-            <form class="acao" method="POST"  action="#">
+            <form class="acao" method="POST"  action="../modelo/abrir-os.php">
+
                 <button class="bnt-os" name="acao" value="abr-os">Abrir O.S</button>
                 <input type="text" class="input-busca" placeholder="Pesquisar O.S...">
+
             </form>
 
         </header>

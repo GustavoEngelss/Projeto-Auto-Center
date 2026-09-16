@@ -2,9 +2,7 @@
     require_once "../assets/menu.php";
     require_once "../conexao.php";
     require_once "../protec.php";
-
 ?>
-
 <?php
     if (!isset($_SESSION['cliente_pesquisa_realizada'])) {
 

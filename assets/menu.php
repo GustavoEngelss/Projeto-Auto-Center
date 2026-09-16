@@ -23,12 +23,6 @@
                             <span class="txt-link">O.S</span>
                         </a>
                     </li>
-                    <li class="item-menu">
-                        <a href="../paginas/cliente.php" class="button-menu" type="submit">
-                            <span class="icon"><i class="bi bi-person"></i></span>
-                            <span class="txt-link">Cliente</span>
-                        </a>
-                    </li>
                      <li class="item-menu">
                         <a href="../paginas/orcamento.php" class="button-menu" type="submit">
                             <span class="icon"><i class="bi bi-search"></i></span>
@@ -36,9 +30,15 @@
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="../paginas/produtos.php" class="button-menu" type="submit">
-                            <span class="icon"><i class="bi bi-box-seam"></i></span>
-                            <span class="txt-link">Produtos</span>
+                        <a href="../paginas/cliente.php" class="button-menu" type="submit">
+                            <span class="icon"><i class="bi bi-person"></i></span>
+                            <span class="txt-link">Cliente</span>
+                        </a>
+                    </li>
+                    <li class="item-menu">
+                        <a href="../paginas/estoque.php" class="button-menu" type="submit">
+                            <span class="icon"><i class="bi bi-cart-dash"></i></i></span>
+                            <span class="txt-link">Compras</span>
                         </a>
                     </li>
                     <li class="item-menu">

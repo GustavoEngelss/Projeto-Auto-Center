@@ -42,7 +42,18 @@ if(categoria && pesquisa && medida) {
     mododepesquisa();
 }
 
+//pegando o id da marca, para mandar para api, que retorna os modelos certos
+document.getElementById('marca').addEventListener('change', function() {
 
+    let marca = this.value
+
+    fetch('../controller/acao.php?marca=' + marca)
+        .then(Response => Response.text())
+        .then(data => {
+            document.getElementById('modelo').innerHTML = '<option value="">Avulso</option>' + data;
+        });
+
+});
 
 /*Script do menu*/
 var menuItem = document.querySelectorAll('.item-menu')

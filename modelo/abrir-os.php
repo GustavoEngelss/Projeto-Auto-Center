@@ -179,22 +179,7 @@
                                             <select name="modelo" id="modelo" class="custom-select">
 
                                                 <option>Avulso</option>
-
-                                                <?php 
                                                 
-                                                    $sql = "SELECT id, nome FROM modelos ORDER BY nome";
-
-                                                    $resultado = mysqli_query($mysqli, $sql);
-                                                ?>
-
-                                                <?php while ($modelo = mysqli_fetch_assoc($resultado)): ?>
-
-                                                    <option value="<?= $modelo['id'] ?>">
-                                                        <?= $modelo['nome'] ?>
-                                                    </option>
-
-                                                <?php endwhile; ?>
-
                                             </select>
 
                                         </div>

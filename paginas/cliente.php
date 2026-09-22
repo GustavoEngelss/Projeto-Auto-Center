@@ -36,7 +36,9 @@
         <header class="cabecalho-clientes">
             <h1>Selecionar Cliente</h1>
         </header>
+
         <div class="container mt-4">
+
             <!--Mensagem de erro ou sucesso-->
             <?php if(isset($_SESSION['mensagem'])): ?>
 
@@ -51,17 +53,27 @@
                 <?php unset($_SESSION['mensagem']); ?>
 
             <?php endif; ?>
+
             <!--Pesquisa do cliente-->
             <div class="card">
+
                 <div class="card-header">
                     <h4>Pesquisar Cliente</h4>
                 </div>
+
                 <div class="card-body">
                     <form action="../controller/acao.php" method="post">
+
                         <div class="mb-3 d-flex">
+
                             <input type="text" name="cliente" class="form-control" value="<?= $_SESSION['busca_cliente'] ?? '' ?>" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
-                            <button type="submit" name="select_cliente" class="btn btn-primary float-right ml-2" >Pesquisar</button>
+                            
+                            <button type="submit" name="select_cliente" class="btn btn-primary float-right ml-2" >
+                                Pesquisar
+                            </button>
+
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -85,16 +97,16 @@
                         <tbody>
                             <?php if(isset($_SESSION['cliente_busca']) && count($_SESSION['cliente_busca']) > 0):?>
                                 <?php foreach($_SESSION['cliente_busca'] as $cliente): ?>
-                            <tr>
-                                <td><?= $cliente['id']?></td>
-                                <td><?= $cliente['nome']?></td>
-                                <td><?= $cliente['cpf']?></td>
-                                <td><?= $cliente['telefone']?></td>
-                                <td>
-                                <a href="../modelo/cliente-view.php?id=<?= $cliente['id'] ?>" class="btn btn-secondary btn-sm">Visualizar</a>
+                                    <tr>
+                                        <td><?= $cliente['id']?></td>
+                                        <td><?= $cliente['nome']?></td>
+                                        <td><?= $cliente['cpf']?></td>
+                                        <td><?= $cliente['telefone']?></td>
+                                        <td>
+                                        <a href="../modelo/cliente-view.php?id=<?= $cliente['id'] ?>" class="btn btn-secondary btn-sm">Visualizar</a>
 
-                                </td>
-                            </tr>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </tbody>

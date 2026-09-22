@@ -2,7 +2,6 @@
 //quando seleciona a forma de pagamento aparece para selecionar a quantidade 
 const pagamento = document.getElementById('pagamento');
 const parcelasContainer = document.getElementById('parcelas-container');
-
 if (pagamento && parcelasContainer) {
 
     function verificarPagamento() {
@@ -25,7 +24,6 @@ if (pagamento && parcelasContainer) {
 const categoria = document.getElementById('categoria');
 const pesquisa = document.getElementById('pesquisa');
 const medida = document.getElementById('medida');
-
 if(categoria && pesquisa && medida) {
 
     function mododepesquisa(){
@@ -44,6 +42,8 @@ if(categoria && pesquisa && medida) {
     mododepesquisa();
 }
 
+
+
 /*Script do menu*/
 var menuItem = document.querySelectorAll('.item-menu')
 function selectLinck(){
@@ -57,8 +57,13 @@ menuItem.forEach((item)=>
 )
 
 //expandir o menu
-var btnExpande = document.querySelector('#btn-expandir')
-var menu = document.querySelector('.menu-lateral')
-btnExpande.addEventListener('click', function(){
-    menu.classList.toggle('expandir')
-})
+var btnExpande = document.querySelector('#btn-expandir');
+var menu = document.querySelector('.menu-lateral');
+
+if (btnExpande && menu) {
+
+    btnExpande.addEventListener('click', function(){
+        menu.classList.toggle('expandir');
+    });
+
+}

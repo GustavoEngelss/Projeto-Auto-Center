@@ -1,6 +1,18 @@
 <?php 
     require_once "../assets/menu.php";
+    require_once "../conexao.php";
     require_once "../protec.php";
+?>
+<?php
+    if (!isset($_SESSION['cliente_pesquisa_realizada'])) {
+
+        unset($_SESSION['cliente_busca']);
+        unset($_SESSION['busca_cliente']);
+        unset($_SESSION['cliente_pesquisado']);
+
+    }
+    unset($_SESSION['cliente_pesquisa_realizada']);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -53,54 +65,74 @@
                         <div>
                             <div>
                                 <!--Busca do Cliente-->
-                                <h5><i class="bi bi-person-vcard"></i> Cliente</h5>
-                                <div class="mb-3 d-flex">
+                                <div>
+                                    
+                                    <h5><i class="bi bi-person-vcard"></i> Cliente</h5>
+                                    <div class="mb-3 d-flex">
 
-                                    <input type="text" name="" class="form-control" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
+                                        <input type="text" name="cliente" class="form-control" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
 
-                                    <button type="submit" name="select_cliente" class="btn btn-primary float-right ml-2" >Buscar</button>
-
-                                </div>
-                                <div class="row">
-
-                                    <!-- Campos do cliente -->
-                                    <div class="col-md-8">
-
-                                        <div class="form-group row mb-2">
-                                            <label class="col-sm-2 col-form-label">Cód:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control border-0">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row mb-2">
-                                            <label class="col-sm-2 col-form-label">Nome:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control border-0">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row mb-2">
-                                            <label class="col-sm-2 col-form-label">Telefone:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control border-0">
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <!-- Botão -->
-                                    <div class="col-md-4 d-flex justify-content-end align-items-end">
-
-                                        <button type="button" class="btn btn-success btn-sm mb-2">
-                                            <i class="bi bi-person-plus-fill"></i>
-                                            Novo cliente
+                                        <button type="submit" name="cliente_os" class="btn btn-primary ml-2">
+                                            Buscar
                                         </button>
 
                                     </div>
+                                    
+                                    <div class="row">
+                                        <!-- Campos do cliente -->
+                                            
+                                                <div class="col-md-8">
 
+                                                    <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
+                                                        <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
+                                                            <div class="form-group row mb-2">
+
+                                                                <label class="col-sm-2 col-form-label">Cód:</label>
+                                                                <div class="col-sm-10">
+                                                                    <p class="form-control border-0"><?= $cliente['id']?></p>
+                                                                </div>
+
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+
+                                                    <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
+                                                        <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
+                                                            <div class="form-group row mb-2">
+
+                                                                <label class="col-sm-2 col-form-label">Nome:</label>
+                                                                <div class="col-sm-10">
+                                                                    <p class="form-control border-0"><?= $cliente['nome']?></p>
+                                                                </div>
+
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+
+                                                    <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
+                                                        <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
+                                                            <div class="form-group row mb-2">
+
+                                                                <label class="col-sm-2 col-form-label">Telefone:</label>
+                                                                <div class="col-sm-10">
+                                                                    <p class="form-control border-0"><?= $cliente['telefone']?></p>
+                                                                </div>
+
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </div>
+
+                                        <!-- Botão -->
+                                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                                            <a href="../modelo/new-cliente.php" class="btn btn-success btn-sm mb-2">
+                                                <i class="bi bi-person-plus-fill"></i>
+                                                Novo cliente
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <hr>
                                 </div>
-                                <hr>
 
                                 <!--Adicionar Carro-->
                                 <div>
@@ -112,14 +144,58 @@
                                         <div class="col-md-4">
 
                                             <label>Marca</label>
-                                            <input type="text" name="" class="form-control">
+
+                                            <select name="marca" id="marca" class="custom-select">
+
+                                                <option>Avulso</option>
+
+                                                <?php 
+
+                                                    $sql=
+                                                    "   SELECT id, nome 
+                                                        FROM marcas 
+                                                        ORDER BY nome"
+                                                    ;
+                                                    $resultado = mysqli_query($mysqli, $sql);
+
+                                                ?>
+
+                                                <?php while ($marca = mysqli_fetch_assoc($resultado)): ?>
+
+                                                    <option value="<?= $marca['id'] ?>">
+                                                        <?= $marca['nome'] ?>
+                                                    </option>
+
+                                                <?php endwhile; ?>
+
+                                            </select>
 
                                         </div>
 
                                         <div class="col-md-4">
 
                                             <label>Modelo</label>
-                                            <input type="text" name="" class="form-control">
+
+                                            <select name="modelo" id="modelo" class="custom-select">
+
+                                                <option>Avulso</option>
+
+                                                <?php 
+                                                
+                                                    $sql = "SELECT id, nome FROM modelos ORDER BY nome";
+
+                                                    $resultado = mysqli_query($mysqli, $sql);
+                                                ?>
+
+                                                <?php while ($modelo = mysqli_fetch_assoc($resultado)): ?>
+
+                                                    <option value="<?= $modelo['id'] ?>">
+                                                        <?= $modelo['nome'] ?>
+                                                    </option>
+
+                                                <?php endwhile; ?>
+
+                                            </select>
 
                                         </div>
 

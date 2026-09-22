@@ -155,6 +155,45 @@
             
     }
 
+    //adicionando o cliente na OS
+    if(isset($_POST['cliente_os'])){
+
+        $_SESSION['cliente_pesquisa_realizada'] = true;
+        $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
+
+        $sql = "SELECT * FROM clientes
+            WHERE id LIKE '$cliente'
+            OR nome LIKE '%$cliente%'
+            OR cpf LIKE '$cliente'
+            OR telefone LIKE '$cliente'
+        ";
+
+        $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
+
+        if($sql_query->num_rows == 0){
+            $_SESSION['cliente_os'] = [];
+            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
+            header('Location: ../modelo/abrir-os.php');
+            exit;
+        }else{
+            $clientes = [];
+            
+            while($clienteEncontrado = $sql_query->fetch_assoc()){
+                $clientes[] = $clienteEncontrado;
+            }
+
+            $_SESSION['cliente_busca'] = $clientes;
+
+            // Marca que acabou de fazer uma pesquisa
+            $_SESSION['pesquisa_realizada'] = true;
+
+            header('Location: ../modelo/abrir-os.php');
+            exit;
+        }
+
+
+    }
+
     // pesquisa produto
     if(isset($_POST['busca_produto'])){
 

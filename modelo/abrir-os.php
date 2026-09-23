@@ -179,7 +179,7 @@
                                             <select name="modelo" id="modelo" class="custom-select">
 
                                                 <option>Avulso</option>
-                                                
+
                                             </select>
 
                                         </div>
@@ -215,6 +215,78 @@
                                     <!--Tabela Itens-->
                                     <div class="card_body">
 
+                                        <div class="card">
+
+                                            <div class="card-body row">
+
+                                                <div class="col-md-6">
+
+                                                    <label><i class="bi bi-tag"></i> Categoria</label><br>
+
+                                                    <select name="categoria" id="categoria" class="custom-select">
+
+                                                        <option value="">Selecione</option>
+
+                                                        <option value="Pneus"<?= (($_SESSION['busca_categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
+
+                                                        <option value="Peça"<?= (($_SESSION['busca_categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
+
+                                                        <option value="Serviço"<?= (($_SESSION['busca_categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
+
+                                                    </select>
+
+                                                </div>
+                                    
+                                                <div class="col-md-6">
+
+                                                    <label><i class="bi bi-upc-scan"></i> Código</label><br>
+
+                                                    <input name="id" class="form-control" placeholder="código do produto" value="<?= $_SESSION['busca_codigo'] ?? '' ?>">
+
+                                                </div>
+                                    
+                                            </div>
+
+                                            <div class="card-body row">
+
+                                                <div class="col-md-8">
+
+                                                    <label>Pesquisa</label>
+                                                    <div id="medida">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row" id="pesquisa" style="display: none;">
+
+                                                        <div class="col-md-9">
+                                                            <input type="text" name="pesquisa" class="form-control" value="<?= $_SESSION['buscar_pesquisa'] ?? '' ?>" placeholder="Digite o nome do produto...">
+                                                        </div>
+
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div class="col-md-2"> 
+
+                                                    <label for=""></label>
+                                                    <button type="button" class="btn btn-outline-primary form-control mt-2"><i class="bi bi-plus"></i> Adicionar</button> 
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
                                         <table class="table table-hover">
                                             
                                             <thead>
@@ -229,26 +301,10 @@
 
                                             </tr>
                                             </thead>
-                                            <tbody>
-
-                                                <tr>
-
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-
-                                                </tr>
-                                                
-                                            </tbody>
+    
                                         </table>
                                     </div>
-                                    <!--botões-->
-                                    <div>
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-plus"></i> Adicionar</button>
-                                    </div>
+
                                 </div>
                                 <hr>
 

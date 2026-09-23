@@ -43,17 +43,29 @@ if(categoria && pesquisa && medida) {
 }
 
 //pegando o id da marca, para mandar para api, que retorna os modelos certos
-document.getElementById('marca').addEventListener('change', function() {
+const marca = document.getElementById('marca');
+const modelo = document.getElementById('modelo');
 
-    let marca = this.value
+if (marca && modelo) {
 
-    fetch('../controller/acao.php?marca=' + marca)
-        .then(Response => Response.text())
-        .then(data => {
-            document.getElementById('modelo').innerHTML = '<option value="">Avulso</option>' + data;
-        });
+    marca.addEventListener('change', function() {
 
-});
+        let valorMarca = this.value;
+
+        if (valorMarca === '') {
+            modelo.innerHTML = '<option value="">Avulso</option>';
+            return;
+        }
+
+        fetch('../controller/acao.php?marca=' + valorMarca)
+            .then(response => response.text())
+            .then(data => {
+                modelo.innerHTML = '<option value="">Avulso</option>' + data;
+            });
+
+    });
+
+}
 
 /*Script do menu*/
 var menuItem = document.querySelectorAll('.item-menu')

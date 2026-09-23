@@ -81,7 +81,7 @@
         }
     }
 
-    //adiionando cliente
+    //adicionando cliente
     if(isset($_POST['new_cliente'])){
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
         $cpf = mysqli_real_escape_string($mysqli, trim($_POST['cpf']));
@@ -283,4 +283,6 @@
         echo "<option value='{$modelo['id']}'> {$modelo['nome']}</option>";
     }
 
+    //adicionando itens na O.S
+    
 ?>

@@ -468,10 +468,11 @@
                                 </div><br>
 
                                 <!--Botões-->
-                                <div class="col-md-2 d-flex float-right">
+                                <div class="col-md-3 d-flex float-right">
 
-                                    <button class="btn btn-success mr-2 px-3" name="" >Salvar</button>
-                                    <a href="../paginas/ordem-servico.php" class="btn btn-danger px-3">Voltar</a>
+                                    <button class="btn btn-success mr-2 px-3" name="" >Abrir O.S</button>
+
+                                    <a href="../paginas/ordem-servico.php" class="btn btn-danger px-3">Fechar a O.S</a>
 
                                 </div>
                             

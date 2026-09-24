@@ -158,6 +158,9 @@
     // pesquisa produto
     if(isset($_POST['busca_produto'])){
 
+        //vê de qual das paginas que vem para fazer o retorno certo 
+        $origem = $_POST['origem'] ?? 'orcamento';
+
         //salva os campos para deixar no input 
         $_SESSION['busca_largura'] = $_POST['largura'] ?? '';
         $_SESSION['busca_perfil'] = $_POST['perfil'] ?? '';
@@ -203,8 +206,13 @@
 
             $_SESSION['produtos'] = [];
             $_SESSION['mensagem'] = 'Informe o código ou a medida do produto!';
-            header('Location: ../paginas/orcamento.php');
-            exit;
+           if ($origem == 'os') {
+                header('Location: ../modelo/abrir-os.php');
+            } else {
+                header('Location: ../paginas/orcamento.php');
+            }
+
+exit;
         }
 
         $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
@@ -226,7 +234,12 @@
             $_SESSION['pesquisa_realizada'] = true;
         }
         
-        header('Location: ../paginas/orcamento.php');
+        if ($origem == 'os') {
+            header('Location: ../modelo/abrir-os.php');
+        } else {
+            header('Location: ../paginas/orcamento.php');
+        }
+
         exit;
     }
 
@@ -283,6 +296,4 @@
         echo "<option value='{$modelo['id']}'> {$modelo['nome']}</option>";
     }
 
-    //adicionando itens na O.S
-    
 ?>

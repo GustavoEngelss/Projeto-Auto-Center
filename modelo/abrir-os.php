@@ -13,6 +13,19 @@
     }
     unset($_SESSION['cliente_pesquisa_realizada']);
 
+    //limpa os campos 
+    if (!isset($_SESSION['pesquisa_realizada'])) {
+
+        unset($_SESSION['produtos']);
+        unset($_SESSION['busca_largura']);
+        unset($_SESSION['busca_perfil']);
+        unset($_SESSION['busca_aro']);
+        unset($_SESSION['busca_categoria']);
+        unset($_SESSION['busca_codigo']);
+        unset($_SESSION['busca_pagamento']);
+        unset($_SESSION['busca_parcelas']);
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -56,86 +69,121 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h4>Dados da O.S</h4>
+
+                    <ul class="nav nav-tabs card-header-tabs">
+
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#cliente">
+                                Cliente e veículo
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#itens">
+                                Itens e valores
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#fechamento">
+                                Fechamento
+                            </a>
+                        </li>
+                        
+                    </ul>
+
                 </div>
 
                 <div class="card-body">
 
                     <form action="../controller/acao.php" method="post">
-                        <div>
-                            <div>
-                                <!--Busca do Cliente-->
-                                <div>
-                                    
-                                    <h5><i class="bi bi-person-vcard"></i> Cliente</h5>
-                                    <div class="mb-3 d-flex">
 
-                                        <input type="text" name="cliente" class="form-control" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
+                        <!--Salva a origem-->
+                        <input type="hidden" name="origem" value="os">
+                            
+                        <div class="tab-content">
+
+                            <!-- Aba Cliente -->
+                            <div class="tab-pane fade show active" id="cliente">
+
+                                <!-- cadastro do cliente -->
+                                <div>
+
+                                    <h5><i class="bi bi-person-vcard"></i> Cliente</h5>
+                                    
+                                    <div class="mb-3 d-flex align-items-end">
+
+                                        <div class="flex-grow-1">
+
+                                            <label>Cliente</label>
+
+                                            <input type="text" name="cliente" class="form-control" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
+
+                                        </div>
 
                                         <button type="submit" name="cliente_os" class="btn btn-primary ml-2">
                                             Buscar
                                         </button>
 
+                                        <a href="../modelo/new-cliente.php" class="btn btn-success ml-2">
+                                            <i class="bi bi-person-plus-fill"></i>
+                                            Novo cliente
+                                        </a>
+
                                     </div>
                                     
                                     <div class="row">
-                                        <!-- Campos do cliente -->
-                                            
-                                                <div class="col-md-8">
 
-                                                    <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
-                                                        <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
-                                                            <div class="form-group row mb-2">
+                                        <div class="col-md-8">
 
-                                                                <label class="col-sm-2 col-form-label">Cód:</label>
-                                                                <div class="col-sm-10">
-                                                                    <p class="form-control border-0"><?= $cliente['id']?></p>
-                                                                </div>
+                                            <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
+                                                <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
 
-                                                            </div>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
+                                                    <div class="form-group row mb-2">
+                                                        <label class="col-sm-2 col-form-label">Cód:</label>
+                                                        <div class="col-sm-10">
+                                                            <p class="form-control border-0"><?= $cliente['id']?></p>
+                                                        </div>
+                                                    </div>
 
-                                                    <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
-                                                        <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
-                                                            <div class="form-group row mb-2">
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
 
-                                                                <label class="col-sm-2 col-form-label">Nome:</label>
-                                                                <div class="col-sm-10">
-                                                                    <p class="form-control border-0"><?= $cliente['nome']?></p>
-                                                                </div>
+                                            <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
+                                                <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
 
-                                                            </div>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
+                                                    <div class="form-group row mb-2">
+                                                        <label class="col-sm-2 col-form-label">Nome:</label>
+                                                        <div class="col-sm-10">
+                                                            <p class="form-control border-0"><?= $cliente['nome']?></p>
+                                                        </div>
+                                                    </div>
 
-                                                    <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
-                                                        <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
-                                                            <div class="form-group row mb-2">
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
 
-                                                                <label class="col-sm-2 col-form-label">Telefone:</label>
-                                                                <div class="col-sm-10">
-                                                                    <p class="form-control border-0"><?= $cliente['telefone']?></p>
-                                                                </div>
+                                            <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
+                                                <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
 
-                                                            </div>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
-                                                </div>
+                                                    <div class="form-group row mb-2">
+                                                        <label class="col-sm-2 col-form-label">Telefone:</label>
+                                                        <div class="col-sm-10">
+                                                            <p class="form-control border-0"><?= $cliente['telefone']?></p>
+                                                        </div>
+                                                    </div>
 
-                                        <!-- Botão -->
-                                        <div class="col-md-4 d-flex justify-content-end align-items-end">
-                                            <a href="../modelo/new-cliente.php" class="btn btn-success btn-sm mb-2">
-                                                <i class="bi bi-person-plus-fill"></i>
-                                                Novo cliente
-                                            </a>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+
                                         </div>
+
                                     </div>
-                                    <hr>
+
                                 </div>
 
-                                <!--Adicionar Carro-->
+                                <!-- add veiculo -->
                                 <div>
+
                                     <h5><i class="bi bi-car-front-fill"></i> Veiculo</h5>
                                     <br>
 
@@ -207,11 +255,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr>
+
+                            </div>
+
+                            <!-- Aba Itens -->
+                            <div class="tab-pane fade" id="itens">
 
                                 <!--Adicionar Itens-->
                                 <div>
+
                                     <h5><i class="bi bi-wrench"></i> Itens</h5>
+
                                     <!--Tabela Itens-->
                                     <div class="card_body">
 
@@ -249,21 +303,28 @@
 
                                             <div class="card-body row">
 
-                                                <div class="col-md-8">
+                                                <div class="col-md-9">
 
                                                     <label>Pesquisa</label>
+
                                                     <div id="medida">
+
                                                         <div class="row">
+
                                                             <div class="col-md-4">
                                                                 <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
                                                             </div>
+
                                                             <div class="col-md-4">
                                                                 <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
                                                             </div>
+
                                                             <div class="col-md-4">
                                                                 <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
                                                             </div>
+
                                                         </div>
+
                                                     </div>
 
                                                     <div class="row" id="pesquisa" style="display: none;">
@@ -276,17 +337,54 @@
                                                     
                                                 </div>
 
-                                                <div class="col-md-2"> 
+                                                <div class="col-md-2 ml-4"> 
 
                                                     <label for=""></label>
-                                                    <button type="button" class="btn btn-outline-primary form-control mt-2"><i class="bi bi-plus"></i> Adicionar</button> 
+                                                    <button type="submit" name="busca_produto" class="btn btn-outline-primary form-control mt-2"></i>Buscar</button>
 
                                                 </div>
+
+                                                <?php
+                                                    // Se a página foi aberta, limpa a pesquisa anterior
+                                                    if(!isset($_POST['select_cliente']) && !isset($_SESSION['pesquisa_realizada'])){
+                                                        unset($_SESSION['produtos']);
+                                                        unset($_SESSION['produto_pesquisado']);
+                                                    }
+                                                ?>
+                                                <table class="table table-hover mt-4 bg-light">
+
+                                                    <?php if(isset($_SESSION['produtos']) && count($_SESSION['produtos']) > 0):?>
+                                                        <thead>
+                                                            <tr>
+                                                                
+                                                                <th>Código</th>
+                                                                <th>Nome</th>
+                                                                <th>Unidades</th>
+                                                                <th>Valor</th>
+                                                                <th></th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <?php foreach($_SESSION['produtos'] as $produto): ?>
+                                                    
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><?= $produto['id']?></td>
+                                                                    <td><?= $produto['nome']?></td>
+                                                                    <td><?= $produto['qntd']?></td>
+                                                                    <td><?= $produto['valor']?></td>
+                                                                </tr>
+                                                            </tbody>
+                                                    
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </table>
 
                                             </div>
 
                                         </div>
-
+                                        
+                                        <!--Itens da O.S-->
                                         <table class="table table-hover">
                                             
                                             <thead>
@@ -306,8 +404,21 @@
                                     </div>
 
                                 </div>
-                                <hr>
+                                
+                                <!--Valor-->
+                                <div>
 
+                                    <div class="float-right ml-2">
+                                        <label>R$</label>
+                                        <input type="text">
+                                    </div>
+                                    
+                                </div><br>
+
+                            </div>
+                            
+                            <!-- Aba Fechamento -->
+                            <div class="tab-pane fade" id="fechamento">
                                 <!--Forma de pagamento-->
                                 <div>
                                     <div class="col-md-6">
@@ -354,8 +465,7 @@
                                         </div>
                                     </div><br>
 
-                                </div>
-                                <hr>
+                                </div><br>
 
                                 <!--Botões-->
                                 <div class="col-md-2 d-flex float-right">
@@ -364,6 +474,7 @@
                                     <a href="../paginas/ordem-servico.php" class="btn btn-danger px-3">Voltar</a>
 
                                 </div>
+                            
                             </div>
 
                         </div>
@@ -373,7 +484,9 @@
             </div>
         </div>
     </section> 
-  
     <script src="../assets/js/script.js"></script> 
+    <?php
+        unset($_SESSION['pesquisa_realizada']);
+    ?>
 </body>
 </html>

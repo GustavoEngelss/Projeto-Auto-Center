@@ -48,6 +48,9 @@
 
         <form action="../controller/acao.php" method="post">
 
+            <!--Salva a origem-->
+            <input type="hidden" name="origem" value="orcamento">
+
             <div class="container mt-4">
 
                 <!--Mensagem de erro ou sucesso-->

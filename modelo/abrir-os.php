@@ -373,10 +373,15 @@
                                                                     <td><?= $produto['nome']?></td>
                                                                     <td><?= $produto['qntd']?></td>
                                                                     <td><?= $produto['valor']?></td>
+                                                                    <td><input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>"></td>
                                                                 </tr>
                                                             </tbody>
-                                                    
                                                         <?php endforeach; ?>
+
+                                                        <button type="submit" name="adicionar_itens" class="btn btn-primary">
+                                                            Adicionar
+                                                        </button>
+
                                                     <?php endif; ?>
                                                 </table>
 
@@ -388,17 +393,55 @@
                                         <table class="table table-hover">
                                             
                                             <thead>
-                                            <tr>
-                                                
-                                                <th>Código</th>
-                                                <th>Produto/Serviço</th>
-                                                <th>Quantidade</th>
-                                                <th>Unitário</th>
-                                                <th>Total</th>
-                                                <th></th>
+                                                <tr>
+                                                    
+                                                    <th>Código</th>
+                                                    <th>Produto/Serviço</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Unitário</th>
+                                                    <th>Total</th>
+                                                    <th></th>
 
-                                            </tr>
+                                                </tr>
                                             </thead>
+
+                                            <tbody>
+
+                                                <?php $itens_os = $_SESSION['itens_os'] ?? [];?>
+
+                                                <?php foreach($itens_os as $produto):?>
+
+                                                    <tr>
+
+                                                        <td>
+                                                            <?= $produto['id'] ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?= htmlspecialchars($produto['nome']) ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <input type="number" name="quantidade[<?= $produto['id'] ?>]" value="1" min="1" class="form-control qntd-itens">
+                                                        </td>
+
+                                                        <td>
+                                                            <input type="number" step="0.01" name="valor[<?= $produto['id'] ?>]" value="<?= $produto['valor'] ?>" class="form-control valor-unitario">
+                                                        </td>
+
+                                                        <td>
+                                                            R$ <span class="total-item">0,00</span>
+                                                        </td>
+
+                                                        <td>
+                                                            <button type="submit" name="remover_item" value="<?= $produto['id'] ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                                        </td>
+
+                                                    </tr>
+
+                                                <?php endforeach; ?>
+
+                                            </tbody>
     
                                         </table>
                                     </div>

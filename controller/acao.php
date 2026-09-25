@@ -211,8 +211,7 @@
             } else {
                 header('Location: ../paginas/orcamento.php');
             }
-
-exit;
+            exit;
         }
 
         $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
@@ -283,17 +282,105 @@ exit;
     }
 
     //selecionando modelo do carro para por O.S
-    $id_marca = $_GET['marca'];
+    if (isset($_GET['marca'])) {
 
-    $sql = "SELECT id, nome
-            FROM modelos
-            WHERE marcas_id = $id_marca
-            ORDER BY nome";
+        $id_marca = mysqli_real_escape_string($mysqli, $_GET['marca']);
 
-    $resultado = mysqli_query($mysqli, $sql);
+        $sql = "SELECT id, nome
+                FROM modelos
+                WHERE marcas_id = '$id_marca'
+                ORDER BY nome";
 
-    while ($modelo = mysqli_fetch_assoc($resultado)){
-        echo "<option value='{$modelo['id']}'> {$modelo['nome']}</option>";
+        $resultado = mysqli_query($mysqli, $sql);
+
+        while ($modelo = mysqli_fetch_assoc($resultado)) {
+            echo "<option value='{$modelo['id']}'>{$modelo['nome']}</option>";
+        }
+
+        exit;
     }
+
+    //seleciona os itens e retona na O.S
+    if(isset($_POST['adicionar_itens'])){
+
+        $produtos = $_POST['produtos'] ?? [];
+
+        if(empty($produtos)){
+            $_SESSION['mensagem'] = 'Nenhum item selecionado!';
+            header('Location: ../modelo/abrir-os.php');
+            exit;
+        }
+
+        // Recupera os itens que já estão na O.S.
+        $itens_os = $_SESSION['itens_os'] ?? [];
+
+        foreach ($produtos as $id){
+
+            $id = mysqli_real_escape_string($mysqli, $id);
+
+            // Verifica se já existe na O.S.
+            $existe = false;
+
+            foreach ($itens_os as $item) {
+
+                if($item['id'] == $id){
+                    $existe = true;
+                    break;
+                }
+
+            }
+
+            // Se já existe, não adiciona novamente
+            if($existe){
+                continue;
+            }
+
+            $sql = "SELECT * FROM produtos
+                    WHERE id = '$id'";
+
+            $sql_query = $mysqli->query($sql)
+                or die("Erro na consulta! " . $mysqli->error);
+
+            if($produto = $sql_query->fetch_assoc()){
+
+                // Valor inicial vem do banco
+                $produto['valor_ofertado'] = $produto['valor'];
+
+                // Quantidade inicial
+                $produto['quantidade'] = 1;
+
+                $itens_os[] = $produto;
+            }
+        }
+
+        $_SESSION['itens_os'] = $itens_os;
+
+        header('Location: ../modelo/abrir-os.php');
+        exit;
+    }
+
+    //deleta iten da o.s
+    if(isset($_POST['remover_item'])){
+
+        $id_produto = $_POST['remover_item'];
+
+        $itens_os = $_SESSION['itens_os'] ?? [];
+
+        foreach($itens_os as $chave => $item){
+
+            if($item['id'] == $id_produto){
+
+                unset($itens_os[$chave]);
+
+                break;
+            }
+        }
+
+        $_SESSION['itens_os'] = array_values($itens_os);
+
+        header('Location: ../modelo/abrir-os.php');
+        exit;
+    }
+
 
 ?>

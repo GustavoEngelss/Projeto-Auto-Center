@@ -2,7 +2,7 @@
     session_start();
     require_once "../conexao.php";
 
-    //criando usuario 
+    //API 01 Criando usuario 
     if(isset($_POST['create_usuario'])){
         //pega os dados do forulario e joga para a variavel 
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
@@ -32,7 +32,7 @@
         }
     }
 
-    //editando usuario 
+    //API 02 Editando usuario 
     if(isset($_POST['update_usuario'])){
         $usuario_id = mysqli_real_escape_string($mysqli, $_POST['usuario_id']);
 
@@ -63,7 +63,7 @@
 
     }
 
-    //deletando o usuario
+    //API 03 Deletando o usuario
     if(isset($_POST['delete_usuario'])){
         $usuario_id = mysqli_real_escape_string($mysqli, $_POST['delete_usuario']);
         $sql = "DELETE from usuarios WHERE id_usuario = '$usuario_id'";
@@ -81,7 +81,7 @@
         }
     }
 
-    //adicionando cliente
+    //API 04 Adicionando cliente
     if(isset($_POST['new_cliente'])){
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
         $cpf = mysqli_real_escape_string($mysqli, trim($_POST['cpf']));
@@ -118,7 +118,7 @@
         }
     }
 
-    //pesquisa cliente
+    //API 05 Pesquisa cliente
     if(isset($_POST['select_cliente'])){
 
         $_SESSION['cliente_pesquisa_realizada'] = true;
@@ -155,7 +155,7 @@
             
     }
 
-    // pesquisa produto
+    //API 06 Pesquisa produto
     if(isset($_POST['busca_produto'])){
 
         //vê de qual das paginas que vem para fazer o retorno certo 
@@ -207,7 +207,7 @@
             $_SESSION['produtos'] = [];
             $_SESSION['mensagem'] = 'Informe o código ou a medida do produto!';
            if ($origem == 'os') {
-                header('Location: ../modelo/abrir-os.php');
+                header('Location: ../modelo/abrir-os.php#itens');
             } else {
                 header('Location: ../paginas/orcamento.php');
             }
@@ -234,7 +234,7 @@
         }
         
         if ($origem == 'os') {
-            header('Location: ../modelo/abrir-os.php');
+            header('Location: ../modelo/abrir-os.php#itens');
         } else {
             header('Location: ../paginas/orcamento.php');
         }
@@ -242,7 +242,7 @@
         exit;
     }
 
-    //adicionando o cliente na OS
+    //API 07 Adicionando o cliente na OS
     if(isset($_POST['cliente_os'])){
 
         $_SESSION['cliente_pesquisa_realizada'] = true;
@@ -281,7 +281,7 @@
 
     }
 
-    //selecionando modelo do carro para por O.S
+    //API 08 Selecionando modelo do carro para por O.S
     if (isset($_GET['marca'])) {
 
         $id_marca = mysqli_real_escape_string($mysqli, $_GET['marca']);
@@ -300,14 +300,14 @@
         exit;
     }
 
-    //seleciona os itens e retona na O.S
+    //API 09 Seleciona os itens e retona na O.S
     if(isset($_POST['adicionar_itens'])){
 
         $produtos = $_POST['produtos'] ?? [];
 
         if(empty($produtos)){
             $_SESSION['mensagem'] = 'Nenhum item selecionado!';
-            header('Location: ../modelo/abrir-os.php');
+            header('Location: ../modelo/abrir-os.php#itens');
             exit;
         }
 
@@ -355,11 +355,11 @@
 
         $_SESSION['itens_os'] = $itens_os;
 
-        header('Location: ../modelo/abrir-os.php');
+        header('Location: ../modelo/abrir-os.php#itens');
         exit;
     }
 
-    //deleta iten da o.s
+    //API 10 Deleta iten da o.s
     if(isset($_POST['remover_item'])){
 
         $id_produto = $_POST['remover_item'];
@@ -378,7 +378,7 @@
 
         $_SESSION['itens_os'] = array_values($itens_os);
 
-        header('Location: ../modelo/abrir-os.php');
+        header('Location: ../modelo/abrir-os.php#itens');
         exit;
     }
 

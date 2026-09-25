@@ -529,6 +529,14 @@
         </div>
     </section> 
     <script src="../assets/js/script.js"></script> 
+    <script>
+
+        //redirecionamento da tela 
+        if (window.location.hash === '#itens') {
+            $('a[href="#itens"]').tab('show');
+        }
+        
+    </script>
     <?php
         unset($_SESSION['pesquisa_realizada']);
     ?>

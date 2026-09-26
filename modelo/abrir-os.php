@@ -373,14 +373,21 @@
                                                                     <td><?= $produto['nome']?></td>
                                                                     <td><?= $produto['qntd']?></td>
                                                                     <td><?= $produto['valor']?></td>
-                                                                    <td><input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>"></td>
+                                                                    <td><input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>"></td> 
                                                                 </tr>
-                                                            </tbody>
+                                                            </tbody>   
+
                                                         <?php endforeach; ?>
 
-                                                        <button type="submit" name="adicionar_itens" class="btn btn-primary">
-                                                            Adicionar
-                                                        </button>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td colspan="5" class="text-right">
+                                                                        <button type="submit" name="adicionar_itens" class="btn btn-primary mt-3">
+                                                                            Adicionar
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tfoot>
 
                                                     <?php endif; ?>
                                                 </table>
@@ -530,12 +537,10 @@
     </section> 
     <script src="../assets/js/script.js"></script> 
     <script>
-
         //redirecionamento da tela 
         if (window.location.hash === '#itens') {
             $('a[href="#itens"]').tab('show');
         }
-        
     </script>
     <?php
         unset($_SESSION['pesquisa_realizada']);

@@ -23,11 +23,7 @@
     <section class="conteudo">
 
         <header class="cabecalho-usuario">
-
-            <h1>Lista de Usuários</h1>
-            <form action="../modelo/add-usuario.php" class="acao">
-                <button class="bnt-usuario">Adicionar Loguin</button>
-            </form>
+            <h2>G.A Pneus</h2>
         </header>
 
         <div class="card-header d-flex justify-content-between align-items-center">

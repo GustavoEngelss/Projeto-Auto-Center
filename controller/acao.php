@@ -6,17 +6,18 @@
     if(isset($_POST['create_usuario'])){
         //pega os dados do forulario e joga para a variavel 
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
-        $usuario = mysqli_real_escape_string($mysqli, trim($_POST['email']));
+        $usuario = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
         $senha = isset($_POST['senha']) ?mysqli_real_escape_string($mysqli, trim($_POST['senha'])) : '';
+        $fone = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
 
         //validação campo vazio
-        if(empty($nome) || empty($usuario) || empty($senha)){
+        if(empty($nome) || empty($usuario) || empty($senha) || empty($numero)){
             $_SESSION['mensagem'] = 'Preencha todos os campos!';
             header('Location: ../paginas/usuarios.php');
             exit;
         }
 
-        $sql = "INSERT INTO usuarios (nome, usuario, senha) VALUES ('$nome', '$usuario', '$senha')";
+        $sql = "INSERT INTO usuarios (nome, usuario, senha, numero, status) VALUES ('$nome', '$usuario', '$senha', '$fone', 'Ativo')";
 
         mysqli_query($mysqli, $sql);
 
@@ -36,18 +37,20 @@
     if(isset($_POST['update_usuario'])){
         $usuario_id = mysqli_real_escape_string($mysqli, $_POST['usuario_id']);
 
-        //pega os dados do forulario e joga para o banco 
+        //pega os dados do forulario e joga para a variavel 
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
-        $usuario = mysqli_real_escape_string($mysqli, trim($_POST['email']));
-        $senha = isset($_POST['senha']) ?mysqli_real_escape_string($mysqli, trim($_POST['senha'])) : '';
+        $usuario = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
+        $fone = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
+
 
         //validação campo vazio
-        if(empty($nome) || empty($usuario) || empty($senha)){
+        if(empty($nome) || empty($usuario) || empty($fone)){
             $_SESSION['mensagem'] = 'Preencha todos os campos!';
             header('Location: ../paginas/usuarios.php');
             exit;
         }
-        $sql = "UPDATE usuarios SET nome='$nome', usuario='$usuario', senha='$senha' WHERE id_usuario='$usuario_id'";
+        
+        $sql = "UPDATE usuarios SET nome='$nome', usuario='$usuario', numero='$fone' WHERE id_usuario='$usuario_id'";
         mysqli_query($mysqli, $sql);
 
         //validação se deu certo volta automatico para a tela de usuarios e mensagem de sucesso ou de erro 

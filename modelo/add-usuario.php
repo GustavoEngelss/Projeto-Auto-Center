@@ -46,13 +46,18 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label>Email</label>
-                                    <input type="text" name="email" class="form-control">
+                                    <label>Usuário</label>
+                                    <input type="text" name="usuario" class="form-control">
                                 </div>
 
                                 <div class="mb-3">
                                     <label>Senha</label>
                                     <input type="text" name="senha" class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Telefone</label>
+                                    <input type="text" name="numero" class="form-control">
                                 </div>
 
                                 <div class="mb-3">

@@ -49,26 +49,28 @@
                                     $usuario = mysqli_fetch_array($query);
                             ?>
                             <form action="../controller/acao.php" method="post">
+
                                 <input type="hidden" name="usuario_id" value="<?= $usuario['id_usuario'] ?>">
 
                                 <div class="mb-3">
                                     <label>Nome</label>
-                                    <input type="text" name="nome" value="<?= $usuario['nome'] ?>" class="form-control">
+                                    <input type="text" name="nome" class="form-control" value="<?= $usuario['nome'] ?>">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label>Email</label>
-                                    <input type="text" name="email" value="<?= $usuario['usuario'] ?>" class="form-control">
+                                    <label>Usuário</label>
+                                    <input type="text" name="usuario" class="form-control" value="<?= $usuario['usuario'] ?>">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label>Senha</label>
-                                    <input type="text" name="senha" value="<?= $usuario['senha'] ?>" class="form-control">
+                                    <label>Telefone</label>
+                                    <input type="text" name="numero" class="form-control" value="<?= $usuario['numero'] ?>">
                                 </div>
 
                                 <div class="mb-3">
                                     <button type="submit" name="update_usuario" class="btn btn-primary">Salvar</button>
                                 </div>
+
                             </form>
                             <?php 
                                 }

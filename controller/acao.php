@@ -7,17 +7,18 @@
         //pega os dados do forulario e joga para a variavel 
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
         $usuario = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
-        $senha = isset($_POST['senha']) ?mysqli_real_escape_string($mysqli, trim($_POST['senha'])) : '';
+        $senha = trim($_POST['senha']);
+        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
         $fone = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
 
         //validação campo vazio
-        if(empty($nome) || empty($usuario) || empty($senha) || empty($numero)){
+        if(empty($nome) || empty($usuario) || empty($senha) || empty($fone)){
             $_SESSION['mensagem'] = 'Preencha todos os campos!';
             header('Location: ../paginas/usuarios.php');
             exit;
         }
 
-        $sql = "INSERT INTO usuarios (nome, usuario, senha, numero, status) VALUES ('$nome', '$usuario', '$senha', '$fone', 'Ativo')";
+        $sql = "INSERT INTO usuarios (nome, usuario, senha, numero, status) VALUES ('$nome', '$usuario', '$senha_hash', '$fone', 'Ativo')";
 
         mysqli_query($mysqli, $sql);
 

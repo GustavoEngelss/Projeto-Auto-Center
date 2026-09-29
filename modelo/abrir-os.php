@@ -23,6 +23,8 @@
     $produtos_busca = $os['produtos'] ?? [];
     $itens_os       = $os['itens'] ?? [];
     $veiculo        = $os['veiculo'] ?? [];
+    $pagamento      = $os['pagamento'] ?? '';
+    $parcelas       = $os['parcelas'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -411,34 +413,43 @@
 
                                             <tbody>
 
-                                                <?php foreach($itens_os as $produto):?>
+                                                <?php $total_os = 0; ?>
+
+                                                <?php foreach($itens_os as $produto): ?>
+
+                                                    <?php
+                                                        $qtd        = $produto['quantidade'] ?? 1;
+                                                        $unitario   = $produto['valor_ofertado'] ?? $produto['valor'];
+                                                        $total_item = $qtd * $unitario;
+                                                        $total_os  += $total_item;
+                                                    ?>
 
                                                     <tr>
+                                                        <td><?= $produto['id'] ?></td>
+
+                                                        <td><?= htmlspecialchars($produto['nome']) ?></td>
 
                                                         <td>
-                                                            <?= $produto['id'] ?>
+                                                            <input type="number" name="quantidade[<?= $produto['id'] ?>]"
+                                                                value="<?= $qtd ?>" min="1"
+                                                                class="form-control qntd-itens">
                                                         </td>
 
                                                         <td>
-                                                            <?= htmlspecialchars($produto['nome']) ?>
+                                                            <input type="number" step="0.01" name="valor[<?= $produto['id'] ?>]"
+                                                                value="<?= $unitario ?>"
+                                                                class="form-control valor-unitario">
                                                         </td>
 
                                                         <td>
-                                                            <input type="number" name="quantidade[<?= $produto['id'] ?>]" value="1" min="1" class="form-control qntd-itens">
+                                                            R$ <span class="total-item"><?= number_format($total_item, 2, ',', '.') ?></span>
                                                         </td>
 
                                                         <td>
-                                                            <input type="number" step="0.01" name="valor[<?= $produto['id'] ?>]" value="<?= $produto['valor'] ?>" class="form-control valor-unitario">
+                                                            <button type="submit" name="remover_item" value="<?= $produto['id'] ?>" class="btn btn-sm btn-danger">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
                                                         </td>
-
-                                                        <td>
-                                                            R$ <span class="total-item">0,00</span>
-                                                        </td>
-
-                                                        <td>
-                                                            <button type="submit" name="remover_item" value="<?= $produto['id'] ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                                                        </td>
-
                                                     </tr>
 
                                                 <?php endforeach; ?>
@@ -451,14 +462,13 @@
                                 </div>
                                 
                                 <!--Valor-->
-                                <div>
+                                <div class="float-right ml-2">
 
-                                    <div class="float-right ml-2">
-                                        <label>R$</label>
-                                        <input type="text">
-                                    </div>
-                                    
-                                </div><br>
+                                    <label>Total: R$</label>
+                                    <input type="text" id="total-geral" class="form-control" readonly
+                                        value="<?= number_format($total_os ?? 0, 2, ',', '.') ?>">
+
+                                </div>
 
                             </div>
                             
@@ -472,13 +482,13 @@
 
                                         <select name="pagamento" id="pagamento" class="custom-select">
 
-                                            <option value="avista"<?= (($busca['pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
+                                            <option value="avista"<?= (($pagamento ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
 
-                                            <option value="pix"<?= (($busca['pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
+                                            <option value="pix"<?= (($pagamento ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
 
-                                            <option value="dinheiro"<?= (($busca['pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
+                                            <option value="dinheiro"<?= (($pagamento ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
 
-                                            <option value="credito"<?= (($busca['pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
+                                            <option value="credito"<?= (($pagamento ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
 
                                         </select>
 
@@ -505,8 +515,11 @@
 
                                     <div>
                                         <div class="float-right ml-2">
-                                            <label> Total: R$</label>
-                                            <input type="text">
+
+                                            <label>Total: R$</label>
+                                            <input type="text" id="total-fechamento" class="form-control" readonly
+                                                value="<?= number_format($total_os ?? 0, 2, ',', '.') ?>">
+
                                         </div>
                                     </div><br>
 

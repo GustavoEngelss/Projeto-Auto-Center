@@ -67,6 +67,50 @@ if (marca && modelo) {
 
 }
 
+//calculo de valores da O.S
+function formatar(valor) {
+    return valor.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+function recalcular() {
+    var totalGeral = 0;
+
+    $('table tbody tr').each(function () {
+        var qtd = parseFloat($(this).find('.qntd-itens').val());
+        var unitario = parseFloat($(this).find('.valor-unitario').val());
+
+        if (isNaN(qtd) || isNaN(unitario)) return;
+
+        var totalItem = qtd * unitario;
+        $(this).find('.total-item').text(formatar(totalItem));
+        totalGeral += totalItem;
+    });
+
+    $('#total-geral').val(formatar(totalGeral));
+    $('#total-fechamento').val(formatar(totalGeral));
+}
+$(document).on('input', '.qntd-itens, .valor-unitario', recalcular);
+$(document).ready(recalcular);
+
+//ENTER NOS CAMPOS DE QUANTIDADE/VALOR SALVA OS ITENS
+$(document).on('keydown', '.qntd-itens, .valor-unitario', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+
+        var form = $(this).closest('form');
+
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'atualizar_itens',
+            value: '1'
+        }).appendTo(form);
+
+        form.submit();
+    }
+});
+
 /*Script do menu*/
 var menuItem = document.querySelectorAll('.item-menu')
 function selectLinck(){
@@ -90,3 +134,4 @@ if (btnExpande && menu) {
     });
 
 }
+

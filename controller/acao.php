@@ -2,8 +2,13 @@
     session_start();
     require_once "../conexao.php";
 
-    //salva o carros digitado nas O.S
+    //salva os dados digitado nas O.S a cada envio 
     if(($_POST['origem'] ?? '') === 'os'){
+
+        $_SESSION['os']['pagamento'] = $_POST['pagamento'] ?? '';
+        $_SESSION['os']['parcelas']  = $_POST['parcelas']  ?? '';
+
+        // Veículo
         $_SESSION['os']['veiculo'] = [
             'marca'  => $_POST['marca']  ?? '',
             'modelo' => $_POST['modelo'] ?? '',
@@ -11,6 +16,25 @@
             'placa'  => $_POST['placa']  ?? '',
             'km'     => $_POST['km']     ?? '',
         ];
+
+        // Quantidade e valor dos itens
+        if(!empty($_SESSION['os']['itens']) && isset($_POST['quantidade'])){
+
+            foreach($_SESSION['os']['itens'] as $i => $item){
+
+                $id = $item['id'];
+
+                if(isset($_POST['quantidade'][$id])){
+                    $qtd = (int) $_POST['quantidade'][$id];
+                    $_SESSION['os']['itens'][$i]['quantidade'] = max(1, $qtd);
+                }
+
+                if(isset($_POST['valor'][$id])){
+                    $valor = (float) $_POST['valor'][$id];
+                    $_SESSION['os']['itens'][$i]['valor_ofertado'] = max(0, $valor);
+                }
+            }
+        }
     }
 
     //API 01 Criando usuario 
@@ -399,5 +423,14 @@
         header('Location: ../modelo/abrir-os.php#itens');
         exit;
     }
+
+    //API 11 Atualiza quantidade e valor dos itens da O.S
+    if(isset($_POST['atualizar_itens'])){
+
+        // Quantidade e valor já foram salvos no bloco do início do arquivo
+        header('Location: ../modelo/abrir-os.php#itens');
+        exit;
+    }
+
 
 ?>

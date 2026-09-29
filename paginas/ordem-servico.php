@@ -24,8 +24,8 @@
 
             <h1>Ordem de Serviço</h1>
             <form class="acao" method="POST"  action="../modelo/abrir-os.php">
-
-                <button class="bnt-os" name="acao" value="abr-os">Abrir O.S</button>
+                
+                <a href="../modelo/abrir-os.php?novo=1" class="bnt-os" name="acao">Nova O.S</a>
                 <input type="text" class="input-busca" placeholder="Pesquisar O.S...">
 
             </form>

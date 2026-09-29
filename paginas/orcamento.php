@@ -1,22 +1,23 @@
 <?php 
+
+    if(session_status() === PHP_SESSION_NONE) session_start();
+
+    //caso ele abre uma nova O.S limpa o campo
+    if(isset($_GET['novo'])){
+
+        unset($_SESSION['orcamento']);
+        header('Location: orcamento.php');
+        exit;
+    }
+
     require_once "../assets/menu.php";
     require_once "../conexao.php";
     require_once "../protec.php";
-?>
-<!--Zera a pesquisa-->
-<?php
-    if (!isset($_SESSION['pesquisa_realizada'])) {
 
-        unset($_SESSION['produtos']);
-        unset($_SESSION['busca_largura']);
-        unset($_SESSION['busca_perfil']);
-        unset($_SESSION['busca_aro']);
-        unset($_SESSION['busca_categoria']);
-        unset($_SESSION['busca_codigo']);
-        unset($_SESSION['busca_pagamento']);
-        unset($_SESSION['busca_parcelas']);
-
-    }
+    //variveis com nome menores para facilitar
+    $orc            = $_SESSION['orcamento'] ?? [];
+    $busca          = $orc['busca'] ?? [];
+    $produtos_busca = $orc['produtos'] ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -83,11 +84,11 @@
 
                                 <option value="">Selecione</option>
 
-                                <option value="Pneus"<?= (($_SESSION['busca_categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
+                                <option value="Pneus"<?= (($busca['categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
 
-                                <option value="Peça"<?= (($_SESSION['busca_categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
+                                <option value="Peça"<?= (($busca['categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
 
-                                <option value="Serviço"<?= (($_SESSION['busca_categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
+                                <option value="Serviço"<?= (($busca['categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
 
                             </select>
 
@@ -97,7 +98,7 @@
 
                             <label><i class="bi bi-upc-scan"></i> Código</label><br>
 
-                            <input name="id" class="form-control" placeholder="código do produto" value="<?= $_SESSION['busca_codigo'] ?? '' ?>">
+                            <input name="id" class="form-control" placeholder="código do produto" value="<?= $busca['codigo'] ?? '' ?>">
 
                         </div>
             
@@ -111,13 +112,13 @@
                             <div id="medida">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
+                                        <input name="largura" type="text" class="form-control" value="<?= $busca['largura'] ?? '' ?>" placeholder="Largura">
                                     </div>
                                     <div class="col-md-4">
-                                        <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
+                                        <input name="perfil" type="text" class="form-control" value="<?= $busca['perfil'] ?? '' ?>" placeholder="Perfil">
                                     </div>
                                     <div class="col-md-4">
-                                        <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
+                                        <input name="aro" type="text" class="form-control" value="<?= $busca['aro'] ?? '' ?>" placeholder="Aro">
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +126,7 @@
                             <div class="row" id="pesquisa" style="display: none;">
 
                                 <div class="col-md-9">
-                                    <input type="text" name="pesquisa" class="form-control" value="<?= $_SESSION['buscar_pesquisa'] ?? '' ?>" placeholder="Digite o nome do produto...">
+                                    <input type="text" name="pesquisa" class="form-control" value="<?= $busca['pesquisa'] ?? '' ?>" placeholder="Digite o nome do produto...">
                                 </div>
 
                             </div>
@@ -138,13 +139,13 @@
 
                             <select name="pagamento" id="pagamento" class="custom-select">
 
-                                <option value="avista"<?= (($_SESSION['busca_pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
+                                <option value="avista"<?= (($busca['pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
 
-                                <option value="pix"<?= (($_SESSION['busca_pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
+                                <option value="pix"<?= (($busca['pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
 
-                                <option value="dinheiro"<?= (($_SESSION['busca_pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
+                                <option value="dinheiro"<?= (($busca['pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
 
-                                <option value="credito"<?= (($_SESSION['busca_pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
+                                <option value="credito"<?= (($busca['pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
 
                             </select>
 
@@ -157,7 +158,7 @@
                                     <?php for($i = 1; $i <= 12; $i++): ?>
                                         
                                         <option value="<?= $i ?>"
-                                            <?= (($_SESSION['busca_parcelas'] ?? '') == $i) ? 'selected' : '' ?>>
+                                            <?= (($busca['parcelas'] ?? '') == $i) ? 'selected' : '' ?>>
                                             <?= $i ?>x
                                         </option>
 
@@ -206,16 +207,20 @@
                                         unset($_SESSION['produto_pesquisado']);
                                     }
                                 ?>
-                                <?php if(isset($_SESSION['produtos']) && count($_SESSION['produtos']) > 0):?>
-                                    <?php foreach($_SESSION['produtos'] as $cliente): ?>
-                                <tr>
-                                    <td><?= $cliente['id']?></td>
-                                    <td><?= $cliente['nome']?></td>
-                                    <td><?= $cliente['qntd']?></td>
-                                    <td><?= $cliente['valor']?></td>
-                                </tr>
+
+                                <?php if(count($produtos_busca) > 0): ?>
+                                    <?php foreach($produtos_busca as $produto): ?>
+
+                                        <tr>
+                                            <td><?= $produto['id'] ?></td>
+                                            <td><?= $produto['nome'] ?></td>
+                                            <td><?= $produto['qntd'] ?></td>
+                                            <td><?= $produto['valor'] ?></td>
+                                        </tr>
+
                                     <?php endforeach; ?>
                                 <?php endif; ?>
+
                             </tbody>
                         </table>
                     </div>
@@ -239,8 +244,5 @@
         </form>
     </section>    
     <script src="../assets/js/script.js"></script>
-    <?php
-        unset($_SESSION['pesquisa_realizada']);
-    ?>
 </body>
 </html>

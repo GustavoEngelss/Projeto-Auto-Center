@@ -2,6 +2,17 @@
     session_start();
     require_once "../conexao.php";
 
+    //salva o carros digitado nas O.S
+    if(($_POST['origem'] ?? '') === 'os'){
+        $_SESSION['os']['veiculo'] = [
+            'marca'  => $_POST['marca']  ?? '',
+            'modelo' => $_POST['modelo'] ?? '',
+            'ano'    => $_POST['ano']    ?? '',
+            'placa'  => $_POST['placa']  ?? '',
+            'km'     => $_POST['km']     ?? '',
+        ];
+    }
+
     //API 01 Criando usuario 
     if(isset($_POST['create_usuario'])){
         //pega os dados do forulario e joga para a variavel 
@@ -126,26 +137,32 @@
     if(isset($_POST['select_cliente'])){
 
         $_SESSION['cliente_pesquisa_realizada'] = true;
+
         $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
 
         $sql = "SELECT * FROM clientes
-            WHERE id LIKE '$cliente'
-            OR nome LIKE '%$cliente%'
-            OR cpf LIKE '$cliente'
-            OR telefone LIKE '$cliente'
+                WHERE id LIKE '$cliente'
+                OR nome LIKE '%$cliente%'
+                OR cpf LIKE '$cliente'
+                OR telefone LIKE '$cliente'
         ";
         $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
 
         if($sql_query->num_rows == 0){
+
             $_SESSION['cliente_busca'] = [];
             $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
-            header('Location: ../paginas/cliente.php');
+            header('Location: ../modelo/abrir-os.php#cliente');
             exit;
+
         }else{
+
             $clientes = [];
             
             while($clienteEncontrado = $sql_query->fetch_assoc()){
+
                 $clientes[] = $clienteEncontrado;
+
             }
 
             $_SESSION['cliente_busca'] = $clientes;
@@ -153,7 +170,7 @@
             // Marca que acabou de fazer uma pesquisa
             $_SESSION['pesquisa_realizada'] = true;
 
-            header('Location: ../paginas/cliente.php');
+            header('Location: ../modelo/abrir-os.php#cliente');
             exit;
         }
             
@@ -163,126 +180,119 @@
     if(isset($_POST['busca_produto'])){
 
         //vê de qual das paginas que vem para fazer o retorno certo 
-        $origem = $_POST['origem'] ?? 'orcamento';
+        $origem = ($_POST['origem'] ?? 'orcamento') === 'os' ? 'os' : 'orcamento';
 
-        //salva os campos para deixar no input 
-        $_SESSION['busca_largura'] = $_POST['largura'] ?? '';
-        $_SESSION['busca_perfil'] = $_POST['perfil'] ?? '';
-        $_SESSION['busca_aro'] = $_POST['aro'] ?? '';
-        $_SESSION['busca_pesquisa'] = $_POST['pesquisa'] ?? '';
-        $_SESSION['busca_categoria'] = $_POST['categoria'] ?? '';
-        $_SESSION['busca_codigo'] = $_POST['id'] ?? '';
-        $_SESSION['busca_pagamento'] = $_POST['pagamento'] ?? '';
-        $_SESSION['busca_parcelas'] = $_POST['parcelas'] ?? '';
+        //para onde a pagina deve voltar 
+        if($origem === 'os'){
 
+            $voltar = '../modelo/abrir-os.php#itens';
 
-        //pega os dados para fazer a pesquisa
-        $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
-        $largura = mysqli_real_escape_string($mysqli, trim($_POST['largura']));
-        $perfil = mysqli_real_escape_string($mysqli, trim($_POST['perfil']));
-        $aro = mysqli_real_escape_string($mysqli, trim($_POST['aro']));
-        $pesquisa = mysqli_real_escape_string($mysqli, trim($_POST['pesquisa']));
-
-        $medida = '';
-        //salva a medida para a consulta, exemplo 175/65R14
-        if($largura != '' && $perfil != '' && $aro != ''){
-            $medida = $largura . '/' . $perfil . 'R' . $aro;
-        }
-
-        // Busca pelo ID
-        if($id != ''){
-
-            $sql = "SELECT * FROM produtos
-                    WHERE id = '$id'";
-
-        // Busca pela medida
-        } elseif($medida != ''){
-
-            $sql = "SELECT * FROM produtos
-                    WHERE nome LIKE '%$medida%'";
-        }elseif ($pesquisa != ''){
-
-            $sql = "SELECT * FROM produtos
-                WHERE nome like '%$pesquisa%'";
-        
-        // Nenhum campo preenchido
         } else {
 
-            $_SESSION['produtos'] = [];
+            $voltar = '../paginas/orcamento.php';
+
+        }
+
+        //guarda oque o usuario digitou na pagina
+        $_SESSION[$origem]['busca'] = [
+
+            'largura'   => $_POST['largura']   ?? '',
+            'perfil'    => $_POST['perfil']    ?? '',
+            'aro'       => $_POST['aro']       ?? '',
+            'pesquisa'  => $_POST['pesquisa']  ?? '',
+            'categoria' => $_POST['categoria'] ?? '',
+            'codigo'    => $_POST['id']        ?? '',
+            'pagamento' => $_POST['pagamento'] ?? '',
+            'parcelas'  => $_POST['parcelas']  ?? '',
+
+        ];
+
+        // Pega os dados para pesquisar
+        $id       = mysqli_real_escape_string($mysqli, trim($_POST['id'] ?? ''));
+        $largura  = mysqli_real_escape_string($mysqli, trim($_POST['largura'] ?? ''));
+        $perfil   = mysqli_real_escape_string($mysqli, trim($_POST['perfil'] ?? ''));
+        $aro      = mysqli_real_escape_string($mysqli, trim($_POST['aro'] ?? ''));
+        $pesquisa = mysqli_real_escape_string($mysqli, trim($_POST['pesquisa'] ?? ''));
+
+        $medida = '';
+        //salva a medida para a consulta
+        if($largura != '' && $perfil != '' && $aro != ''){
+
+            $medida = $largura . '/' . $perfil . 'R' . $aro;
+
+        }
+
+        // Escolhe qual consulta fazer
+        if($id != ''){
+
+            $sql = "SELECT * FROM produtos WHERE id = '$id'";
+
+        } elseif($medida != ''){
+
+            $sql = "SELECT * FROM produtos WHERE nome LIKE '%$medida%'";
+
+        } elseif($pesquisa != ''){
+
+            $sql = "SELECT * FROM produtos WHERE nome LIKE '%$pesquisa%'";
+
+        } else {
+
+            $_SESSION[$origem]['produtos'] = [];
             $_SESSION['mensagem'] = 'Informe o código ou a medida do produto!';
-           if ($origem == 'os') {
-                header('Location: ../modelo/abrir-os.php#itens');
-            } else {
-                header('Location: ../paginas/orcamento.php');
-            }
+            header("Location: $voltar");
             exit;
+
         }
 
         $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
 
-        if($sql_query->num_rows == 0){
+        $produtos = [];
 
-            $_SESSION['produtos'] = [];
+        while($p = $sql_query->fetch_assoc()){
+            $produtos[] = $p;
+        }
+
+        // Salva o resultado no armário DESTA página
+        $_SESSION[$origem]['produtos'] = $produtos;
+
+        if(empty($produtos)){
             $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
-
-        } else {
-
-            $produto = [];
-
-            while($produtoEncontrado = $sql_query->fetch_assoc()){
-                $produto[] = $produtoEncontrado;
-            }
-
-            $_SESSION['produtos'] = $produto;
-            $_SESSION['pesquisa_realizada'] = true;
-        }
-        
-        if ($origem == 'os') {
-            header('Location: ../modelo/abrir-os.php#itens');
-        } else {
-            header('Location: ../paginas/orcamento.php');
         }
 
+        header("Location: $voltar");
         exit;
     }
 
     //API 07 Adicionando o cliente na OS
     if(isset($_POST['cliente_os'])){
 
-        $_SESSION['cliente_pesquisa_realizada'] = true;
         $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
 
         $sql = "SELECT * FROM clientes
-            WHERE id LIKE '$cliente'
-            OR nome LIKE '%$cliente%'
-            OR cpf LIKE '$cliente'
-            OR telefone LIKE '$cliente'
+                WHERE id LIKE '$cliente'
+                OR nome LIKE '%$cliente%'
+                OR cpf LIKE '$cliente'
+                OR telefone LIKE '$cliente'
         ";
 
         $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
 
-        if($sql_query->num_rows == 0){
-            $_SESSION['cliente_os'] = [];
-            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
-            header('Location: ../modelo/abrir-os.php');
-            exit;
-        }else{
-            $clientes = [];
-            
-            while($clienteEncontrado = $sql_query->fetch_assoc()){
-                $clientes[] = $clienteEncontrado;
-            }
+        $clientes = [];
 
-            $_SESSION['cliente_busca'] = $clientes;
+        while($c = $sql_query->fetch_assoc()){
 
-            // Marca que acabou de fazer uma pesquisa
-            $_SESSION['pesquisa_realizada'] = true;
+            $clientes[] = $c;
 
-            header('Location: ../modelo/abrir-os.php');
-            exit;
         }
 
+        $_SESSION['os']['cliente'] = $clientes;
 
+        if(empty($clientes)){
+            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
+        }
+
+        header('Location: ../modelo/abrir-os.php#cliente');
+        exit;
     }
 
     //API 08 Selecionando modelo do carro para por O.S
@@ -316,7 +326,7 @@
         }
 
         // Recupera os itens que já estão na O.S.
-        $itens_os = $_SESSION['itens_os'] ?? [];
+        $itens_os = $_SESSION['os']['itens'] ?? [];
 
         foreach ($produtos as $id){
 
@@ -357,7 +367,11 @@
             }
         }
 
-        $_SESSION['itens_os'] = $itens_os;
+        $_SESSION['os']['itens'] = $itens_os;
+
+        // Limpa a pesquisa: tabela e campos
+        $_SESSION['os']['produtos'] = [];
+        $_SESSION['os']['busca'] = [];
 
         header('Location: ../modelo/abrir-os.php#itens');
         exit;
@@ -368,7 +382,7 @@
 
         $id_produto = $_POST['remover_item'];
 
-        $itens_os = $_SESSION['itens_os'] ?? [];
+        $itens_os = $_SESSION['os']['itens'] ?? [];
 
         foreach($itens_os as $chave => $item){
 
@@ -380,11 +394,10 @@
             }
         }
 
-        $_SESSION['itens_os'] = array_values($itens_os);
+        $_SESSION['os']['itens'] = array_values($itens_os);
 
         header('Location: ../modelo/abrir-os.php#itens');
         exit;
     }
-
 
 ?>

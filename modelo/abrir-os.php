@@ -1,32 +1,30 @@
-<?php 
+<?php
+
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    // Só limpa quando abrir uma O.S NOVA 
+    if (isset($_GET['novo'])) {
+
+        unset($_SESSION['os']);
+        header('Location: abrir-os.php');
+        exit;
+
+    }
+
     require_once "../assets/menu.php";
     require_once "../conexao.php";
     require_once "../protec.php";
+
+
+    //variveis com nome menores para facilitar
+    $os             = $_SESSION['os'] ?? [];
+    $busca          = $os['busca'] ?? [];
+    $cliente_busca  = $os['cliente'] ?? [];
+    $produtos_busca = $os['produtos'] ?? [];
+    $itens_os       = $os['itens'] ?? [];
+    $veiculo        = $os['veiculo'] ?? [];
 ?>
-<?php
-    if (!isset($_SESSION['cliente_pesquisa_realizada'])) {
 
-        unset($_SESSION['cliente_busca']);
-        unset($_SESSION['busca_cliente']);
-        unset($_SESSION['cliente_pesquisado']);
-
-    }
-    unset($_SESSION['cliente_pesquisa_realizada']);
-
-    //limpa os campos 
-    if (!isset($_SESSION['pesquisa_realizada'])) {
-
-        unset($_SESSION['produtos']);
-        unset($_SESSION['busca_largura']);
-        unset($_SESSION['busca_perfil']);
-        unset($_SESSION['busca_aro']);
-        unset($_SESSION['busca_categoria']);
-        unset($_SESSION['busca_codigo']);
-        unset($_SESSION['busca_pagamento']);
-        unset($_SESSION['busca_parcelas']);
-    }
-
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -67,7 +65,8 @@
             <?php endif; ?>
 
             <div class="card">
-
+                
+                <!--Cabeçalho ( 3 abas )-->
                 <div class="card-header">
 
                     <ul class="nav nav-tabs card-header-tabs">
@@ -136,39 +135,27 @@
 
                                         <div class="col-md-8">
 
-                                            <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
-                                                <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
+                                            <?php if (!empty($cliente_busca)): ?>
+                                                <?php foreach ($cliente_busca as $cliente): ?>
 
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Cód:</label>
                                                         <div class="col-sm-10">
-                                                            <p class="form-control border-0"><?= $cliente['id']?></p>
+                                                            <p class="form-control border-0"><?= $cliente['id'] ?></p>
                                                         </div>
                                                     </div>
-
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-
-                                            <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
-                                                <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
 
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Nome:</label>
                                                         <div class="col-sm-10">
-                                                            <p class="form-control border-0"><?= $cliente['nome']?></p>
+                                                            <p class="form-control border-0"><?= $cliente['nome'] ?></p>
                                                         </div>
                                                     </div>
-
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-
-                                            <?php if (isset($_SESSION['cliente_busca']) && !empty($_SESSION['cliente_busca'])): ?>
-                                                <?php foreach ($_SESSION['cliente_busca'] as $cliente): ?>
 
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Telefone:</label>
                                                         <div class="col-sm-10">
-                                                            <p class="form-control border-0"><?= $cliente['telefone']?></p>
+                                                            <p class="form-control border-0"><?= $cliente['telefone'] ?></p>
                                                         </div>
                                                     </div>
 
@@ -195,22 +182,17 @@
 
                                             <select name="marca" id="marca" class="custom-select">
 
-                                                <option>Avulso</option>
+                                                <option value="">Avulso</option>
 
-                                                <?php 
-
-                                                    $sql=
-                                                    "   SELECT id, nome 
-                                                        FROM marcas 
-                                                        ORDER BY nome"
-                                                    ;
+                                                <?php
+                                                    $sql = "SELECT id, nome FROM marcas ORDER BY nome";
                                                     $resultado = mysqli_query($mysqli, $sql);
-
                                                 ?>
 
                                                 <?php while ($marca = mysqli_fetch_assoc($resultado)): ?>
 
-                                                    <option value="<?= $marca['id'] ?>">
+                                                    <option value="<?= $marca['id'] ?>"
+                                                        <?= (($veiculo['marca'] ?? '') == $marca['id']) ? 'selected' : '' ?>>
                                                         <?= $marca['nome'] ?>
                                                     </option>
 
@@ -226,7 +208,26 @@
 
                                             <select name="modelo" id="modelo" class="custom-select">
 
-                                                <option>Avulso</option>
+                                                <option value="">Avulso</option>
+
+                                                <?php if (!empty($veiculo['marca'])): ?>
+
+                                                    <?php
+                                                        $id_marca = mysqli_real_escape_string($mysqli, $veiculo['marca']);
+                                                        $sql = "SELECT id, nome FROM modelos WHERE marcas_id = '$id_marca' ORDER BY nome";
+                                                        $res_modelos = mysqli_query($mysqli, $sql);
+                                                    ?>
+
+                                                    <?php while ($modelo = mysqli_fetch_assoc($res_modelos)): ?>
+
+                                                        <option value="<?= $modelo['id'] ?>"
+                                                            <?= (($veiculo['modelo'] ?? '') == $modelo['id']) ? 'selected' : '' ?>>
+                                                            <?= $modelo['nome'] ?>
+                                                        </option>
+
+                                                    <?php endwhile; ?>
+
+                                                <?php endif; ?>
 
                                             </select>
 
@@ -235,24 +236,25 @@
                                         <div class="col-md-4">
 
                                             <label>Ano</label>
-                                            <input type="text" name="" class="form-control">
+                                            <input type="text" name="ano" class="form-control" value="<?= htmlspecialchars($veiculo['ano'] ?? '') ?>">
                                             <br>
 
                                         </div>
-                                        
+
                                         <div class="col-md-4">
 
                                             <label>Placa</label>
-                                            <input type="text" name="" class="form-control">
+                                            <input type="text" name="placa" class="form-control" value="<?= htmlspecialchars($veiculo['placa'] ?? '') ?>">
 
                                         </div>
 
                                         <div class="col-md-4">
 
                                             <label>Quilometragem (KM)</label>
-                                            <input type="text" name="" class="form-control">
+                                            <input type="text" name="km" class="form-control" value="<?= htmlspecialchars($veiculo['km'] ?? '') ?>">
 
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -281,11 +283,11 @@
 
                                                         <option value="">Selecione</option>
 
-                                                        <option value="Pneus"<?= (($_SESSION['busca_categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
+                                                        <option value="Pneus"<?= (($busca['categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
 
-                                                        <option value="Peça"<?= (($_SESSION['busca_categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
+                                                        <option value="Peça"<?= (($busca['categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>
 
-                                                        <option value="Serviço"<?= (($_SESSION['busca_categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
+                                                        <option value="Serviço"<?= (($busca['categoria'] ?? '') == 'Serviço') ? 'selected' : '' ?>>Serviço</option>
 
                                                     </select>
 
@@ -295,7 +297,7 @@
 
                                                     <label><i class="bi bi-upc-scan"></i> Código</label><br>
 
-                                                    <input name="id" class="form-control" placeholder="código do produto" value="<?= $_SESSION['busca_codigo'] ?? '' ?>">
+                                                    <input name="id" class="form-control" placeholder="código do produto" value="<?= $busca['codigo'] ?? '' ?>">
 
                                                 </div>
                                     
@@ -312,15 +314,15 @@
                                                         <div class="row">
 
                                                             <div class="col-md-4">
-                                                                <input name="largura" type="text" class="form-control" value="<?= $_SESSION['busca_largura'] ?? '' ?>" placeholder="Largura">
+                                                                <input name="largura" type="text" class="form-control" value="<?= $busca['largura'] ?? '' ?>" placeholder="Largura">
                                                             </div>
 
                                                             <div class="col-md-4">
-                                                                <input name="perfil" type="text" class="form-control" value="<?= $_SESSION['busca_perfil'] ?? '' ?>" placeholder="Perfil">
+                                                                <input name="perfil" type="text" class="form-control" value="<?= $busca['perfil'] ?? '' ?>" placeholder="Perfil">
                                                             </div>
 
                                                             <div class="col-md-4">
-                                                                <input name="aro" type="text" class="form-control" value="<?= $_SESSION['busca_aro'] ?? '' ?>" placeholder="Aro">
+                                                                <input name="aro" type="text" class="form-control" value="<?= $busca['aro'] ?? '' ?>" placeholder="Aro">
                                                             </div>
 
                                                         </div>
@@ -330,7 +332,7 @@
                                                     <div class="row" id="pesquisa" style="display: none;">
 
                                                         <div class="col-md-9">
-                                                            <input type="text" name="pesquisa" class="form-control" value="<?= $_SESSION['buscar_pesquisa'] ?? '' ?>" placeholder="Digite o nome do produto...">
+                                                            <input type="text" name="pesquisa" class="form-control" value="<?= $busca['pesquisa'] ?? '' ?>" placeholder="Digite o nome do produto...">
                                                         </div>
 
                                                     </div>
@@ -344,16 +346,9 @@
 
                                                 </div>
 
-                                                <?php
-                                                    // Se a página foi aberta, limpa a pesquisa anterior
-                                                    if(!isset($_POST['select_cliente']) && !isset($_SESSION['pesquisa_realizada'])){
-                                                        unset($_SESSION['produtos']);
-                                                        unset($_SESSION['produto_pesquisado']);
-                                                    }
-                                                ?>
                                                 <table class="table table-hover mt-4 bg-light">
 
-                                                    <?php if(isset($_SESSION['produtos']) && count($_SESSION['produtos']) > 0):?>
+                                                    <?php if(isset($produtos_busca) && count($produtos_busca) > 0):?>
                                                         <thead>
                                                             <tr>
                                                                 
@@ -365,7 +360,7 @@
 
                                                             </tr>
                                                         </thead>
-                                                        <?php foreach($_SESSION['produtos'] as $produto): ?>
+                                                        <?php foreach($produtos_busca as $produto): ?>
                                                     
                                                             <tbody>
                                                                 <tr>
@@ -382,9 +377,11 @@
                                                             <tfoot>
                                                                 <tr>
                                                                     <td colspan="5" class="text-right">
+
                                                                         <button type="submit" name="adicionar_itens" class="btn btn-primary mt-3">
                                                                             Adicionar
                                                                         </button>
+
                                                                     </td>
                                                                 </tr>
                                                             </tfoot>
@@ -413,8 +410,6 @@
                                             </thead>
 
                                             <tbody>
-
-                                                <?php $itens_os = $_SESSION['itens_os'] ?? [];?>
 
                                                 <?php foreach($itens_os as $produto):?>
 
@@ -477,13 +472,13 @@
 
                                         <select name="pagamento" id="pagamento" class="custom-select">
 
-                                            <option value="avista"<?= (($_SESSION['busca_pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
+                                            <option value="avista"<?= (($busca['pagamento'] ?? '') == 'avista') ? 'selected' : '' ?>>À vista</option>
 
-                                            <option value="pix"<?= (($_SESSION['busca_pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
+                                            <option value="pix"<?= (($busca['pagamento'] ?? '') == 'pix') ? 'selected' : '' ?>>Pix</option>
 
-                                            <option value="dinheiro"<?= (($_SESSION['busca_pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
+                                            <option value="dinheiro"<?= (($busca['pagamento'] ?? '') == 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
 
-                                            <option value="credito"<?= (($_SESSION['busca_pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
+                                            <option value="credito"<?= (($busca['pagamento'] ?? '') == 'credito') ? 'selected' : '' ?>>Crédito</option>
 
                                         </select>
 
@@ -496,7 +491,7 @@
                                                 <?php for($i = 1; $i <= 12; $i++): ?>
                                                     
                                                     <option value="<?= $i ?>"
-                                                        <?= (($_SESSION['busca_parcelas'] ?? '') == $i) ? 'selected' : '' ?>>
+                                                        <?= (($busca['parcelas'] ?? '') == $i) ? 'selected' : '' ?>>
                                                         <?= $i ?>x
                                                     </option>
 
@@ -536,11 +531,13 @@
         </div>
     </section> 
     <script src="../assets/js/script.js"></script> 
-    <script>
-        //redirecionamento da tela 
-        if (window.location.hash === '#itens') {
-            $('a[href="#itens"]').tab('show');
+   <script>
+
+        //redirecionamento para pagina
+        if (window.location.hash) {
+            $('a[href="' + window.location.hash + '"]').tab('show');
         }
+
     </script>
     <?php
         unset($_SESSION['pesquisa_realizada']);

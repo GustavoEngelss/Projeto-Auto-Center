@@ -436,8 +436,8 @@
                                                         </td>
 
                                                         <td>
-                                                            <input type="number" step="0.01" name="valor[<?= $produto['id'] ?>]"
-                                                                value="<?= $unitario ?>"
+                                                           <input type="text" inputmode="decimal" name="valor[<?= $produto['id'] ?>]"
+                                                                value="<?= number_format($unitario, 2, ',', '') ?>"
                                                                 class="form-control valor-unitario">
                                                         </td>
 

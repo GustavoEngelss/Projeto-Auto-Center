@@ -4,41 +4,52 @@
 
     if(isset($_POST['acao'])){
 
-        if(empty($_POST['email'])){
-            $mensagem = 'Preencha seu e-mail';
+        if(empty($_POST['usuario'])){
+
+            $mensagem = 'Preencha seu usuário';
 
         }else if(empty($_POST['senha'])){
+
             $mensagem = 'Preencha sua senha';
 
         }else{
-            //limpando o campo, por segurança.
-            $email = $mysqli->real_escape_string($_POST['email']);
-            $senha = $mysqli->real_escape_string($_POST['senha']);
 
-            //consultando sql no banco.
-            $sql_code = "SELECT * FROM usuarios WHERE usuario = '$email' and senha = '$senha'";
-            $sql_query = $mysqli->query($sql_code) or die("Falha na execução do código SQL: " .$mysqli->error);
+            $usuario = $mysqli->real_escape_string($_POST['usuario']);
+            $senha = $_POST['senha'];
 
-            //Se der certo a quantidade = 1
+            // Busca o usuário no banco
+            $sql_code = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
+
+            $sql_query = $mysqli->query($sql_code) 
+                or die("Falha na execução do código SQL: " . $mysqli->error);
+
             $quantidade = $sql_query->num_rows;
-            if($quantidade == 1){
-                //sanvaldo o dados do usurio do banco na variavel
-                $usuario = $sql_query->fetch_assoc();
 
-                //criando uma sessão.
-                if(!isset($_SESSION)){
-                    session_start();
+            if($quantidade == 1){
+
+                $dados_usuario = $sql_query->fetch_assoc();
+
+                // Confere a senha digitada com a senha criptografada
+                if(password_verify($senha, $dados_usuario['senha'])){
+
+                    if(!isset($_SESSION)){
+                        session_start();
+                    }
+
+                    $_SESSION['id'] = $dados_usuario['id_usuario'];
+                    $_SESSION['nome'] = $dados_usuario['nome'];
+
+                    header('Location: paginas/ordem-servico.php');
+                    exit;
+
+                }else{
+
+                    $mensagem = 'Falha ao logar! Usuário ou senha incorreta.';
                 }
 
-                $_SESSION ['id'] = $usuario['id_usuario'];
-                $_SESSION ['nome'] = $usuario['nome'];
-
-                //redirecionando o usuario para a pagina principal.
-                header('Location: paginas/ordem-servico.php');
-                exit;
-
             }else{
-                $mensagem = 'Falha ao logar! E-mail ou senha incorreta.';
+
+                $mensagem = 'Falha ao logar! Usuário ou senha incorreta.';
             }
         }
     }
@@ -73,7 +84,7 @@
             <h1>Loguin</h1>
 
             <div class="input-box">
-                <input type="text" placeholder="Usuário" name="email">
+                <input type="text" placeholder="Usuário" name="usuario">
                 <i class="bi bi-person"></i>
             </div>
 

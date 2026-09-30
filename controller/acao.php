@@ -264,32 +264,45 @@
 
         $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
 
-        $sql = "SELECT * FROM clientes
-                WHERE id LIKE '$cliente'
-                OR nome LIKE '%$cliente%'
-                OR cpf LIKE '$cliente'
-                OR telefone LIKE '$cliente'
-        ";
+        //limpa o resultado
+        $_SESSION[$origem]['cliente'] = [];
 
-        $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
+        if($cliente === ''){
 
-        $clientes = [];
+            $_SESSION['mensagem'] = 'Campo de pesquisa está vazio!';
+            header("Location: $voltar");
+            exit;
 
-        while($c = $sql_query->fetch_assoc()){
+        } else{
 
-            $clientes[] = $c;
+            $sql = "SELECT * FROM clientes
+                    WHERE id LIKE '$cliente'
+                    OR nome LIKE '%$cliente%'
+                    OR cpf LIKE '$cliente'
+                    OR telefone LIKE '$cliente'
+            ";
+
+            $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
+
+            $clientes = [];
+
+            while($c = $sql_query->fetch_assoc()){
+
+                $clientes[] = $c;
+
+            }
+
+            //salva o resultado na sessão da requisição
+            $_SESSION[$origem]['cliente'] = $clientes;
+
+            if(empty($clientes)){
+                $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
+            }
+
+            header("Location: $voltar");
+            exit;
 
         }
-
-        //salva o resultado na sessão da requisição
-        $_SESSION[$origem]['cliente'] = $clientes;
-
-        if(empty($clientes)){
-            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
-        }
-
-        header("Location: $voltar");
-        exit;
     }
 
     //API 07 Selecionando modelo do carro para por O.S

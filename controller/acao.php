@@ -273,7 +273,9 @@
         $produtos = [];
 
         while($p = $sql_query->fetch_assoc()){
+
             $produtos[] = $p;
+
         }
 
         // Salva o resultado no armário DESTA página
@@ -288,7 +290,20 @@
     }
 
     //API 07 Adicionando o cliente na OS
-    if(isset($_POST['cliente_os'])){
+    if(isset($_POST['busca_cliente'])){
+
+        //origem da requisição
+        $origem = ($_POST['origem'] ?? 'pesquisa_cliente') === 'os' ? 'os': 'pesquisa_cliente';
+
+        //para qual pagina retornar
+        if($origem === 'os'){
+
+            $voltar = '../modelo/abrir-os.php#cliente';
+        } else {
+
+            $voltar = '../paginas/cliente.php';
+
+        }
 
         $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
 
@@ -309,13 +324,14 @@
 
         }
 
-        $_SESSION['os']['cliente'] = $clientes;
+        //salva o resultado na sessão da requisição
+        $_SESSION[$origem]['cliente'] = $clientes;
 
         if(empty($clientes)){
             $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
         }
 
-        header('Location: ../modelo/abrir-os.php#cliente');
+        header("Location: $voltar");
         exit;
     }
 

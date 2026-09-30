@@ -1,17 +1,26 @@
 <?php 
+
+    //se não tiver sessão aberta abre uma sessão
+    if(session_status() === PHP_SESSION_NONE) session_start();
+
+    //limpa a os dados quando iniciar uma nova sessão
+    if(isset($_GET['novo'])){
+
+        unset($_SESSION['pesquisa_cliente']);
+        header('Location: cliente.php');
+        exit;
+
+    }
+
     require_once "../assets/menu.php";
     require_once "../conexao.php";
     require_once "../protec.php";
-?>
-<?php
-    if (!isset($_SESSION['cliente_pesquisa_realizada'])) {
 
-        unset($_SESSION['cliente_busca']);
-        unset($_SESSION['busca_cliente']);
-        unset($_SESSION['cliente_pesquisado']);
+    //variaveis com nome menores para facilitar
+    $pesquisa_cliente     = $_SESSION['pesquisa_cliente'] ?? [];
+    $cliente_busca        = $pesquisa_cliente['cliente'] ?? [];
 
-    }
-    unset($_SESSION['cliente_pesquisa_realizada']);
+
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +77,7 @@
 
                             <input type="text" name="cliente" class="form-control" value="<?= $_SESSION['busca_cliente'] ?? '' ?>" placeholder="Digite o código, CPF, Nome, telefone ou CNPJ do cliente...">
                             
-                            <button type="submit" name="select_cliente" class="btn btn-primary float-right ml-2" >
+                            <button type="submit" name="busca_cliente" class="btn btn-primary float-right ml-2" >
                                 Pesquisar
                             </button>
 
@@ -95,8 +104,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <?php if(isset($_SESSION['cliente_busca']) && count($_SESSION['cliente_busca']) > 0):?>
-                                <?php foreach($_SESSION['cliente_busca'] as $cliente): ?>
+                            <?php if(isset($cliente_busca) && count($cliente_busca) > 0):?>
+                                <?php foreach($cliente_busca as $cliente): ?>
                                     <tr>
                                         <td><?= $cliente['id']?></td>
                                         <td><?= $cliente['nome']?></td>

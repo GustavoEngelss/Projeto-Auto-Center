@@ -30,7 +30,7 @@
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="../paginas/cliente.php" class="button-menu" >
+                        <a href="../paginas/cliente.php?novo=1" class="button-menu" >
                             <span class="icon"><i class="bi bi-person"></i></span>
                             <span class="txt-link">Cliente</span>
                         </a>

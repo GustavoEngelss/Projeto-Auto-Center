@@ -122,7 +122,7 @@
 
                                         </div>
 
-                                        <button type="submit" name="cliente_os" class="btn btn-primary ml-2">
+                                        <button type="submit" name="busca_cliente" class="btn btn-primary ml-2">
                                             Buscar
                                         </button>
 

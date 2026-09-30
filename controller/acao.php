@@ -157,50 +157,7 @@
         }
     }
 
-    //API 05 Pesquisa cliente
-    if(isset($_POST['select_cliente'])){
-
-        $_SESSION['cliente_pesquisa_realizada'] = true;
-
-        $cliente = mysqli_real_escape_string($mysqli, trim($_POST['cliente']));
-
-        $sql = "SELECT * FROM clientes
-                WHERE id LIKE '$cliente'
-                OR nome LIKE '%$cliente%'
-                OR cpf LIKE '$cliente'
-                OR telefone LIKE '$cliente'
-        ";
-        $sql_query = $mysqli->query($sql) or die("Erro na consulta! " . $mysqli->error);
-
-        if($sql_query->num_rows == 0){
-
-            $_SESSION['cliente_busca'] = [];
-            $_SESSION['mensagem'] = 'Nenhum resultado encontrado!';
-            header('Location: ../modelo/abrir-os.php#cliente');
-            exit;
-
-        }else{
-
-            $clientes = [];
-            
-            while($clienteEncontrado = $sql_query->fetch_assoc()){
-
-                $clientes[] = $clienteEncontrado;
-
-            }
-
-            $_SESSION['cliente_busca'] = $clientes;
-
-            // Marca que acabou de fazer uma pesquisa
-            $_SESSION['pesquisa_realizada'] = true;
-
-            header('Location: ../modelo/abrir-os.php#cliente');
-            exit;
-        }
-            
-    }
-
-    //API 06 Pesquisa produto
+    //API 05 Pesquisa produto
     if(isset($_POST['busca_produto'])){
 
         //vê de qual das paginas que vem para fazer o retorno certo 
@@ -289,7 +246,7 @@
         exit;
     }
 
-    //API 07 Adicionando o cliente na OS
+    //API 06 Pesquisa cliente
     if(isset($_POST['busca_cliente'])){
 
         //origem da requisição
@@ -335,7 +292,7 @@
         exit;
     }
 
-    //API 08 Selecionando modelo do carro para por O.S
+    //API 07 Selecionando modelo do carro para por O.S
     if (isset($_GET['marca'])) {
 
         $id_marca = mysqli_real_escape_string($mysqli, $_GET['marca']);
@@ -354,7 +311,7 @@
         exit;
     }
 
-    //API 09 Seleciona os itens e retona na O.S
+    //API 08 Seleciona os itens e retona na O.S
     if(isset($_POST['adicionar_itens'])){
 
         $produtos = $_POST['produtos'] ?? [];
@@ -417,7 +374,7 @@
         exit;
     }
 
-    //API 10 Deleta iten da o.s
+    //API 09 Deleta iten da o.s
     if(isset($_POST['remover_item'])){
 
         $id_produto = $_POST['remover_item'];
@@ -440,7 +397,7 @@
         exit;
     }
 
-    //API 11 Atualiza quantidade e valor dos itens da O.S
+    //API 10 Atualiza quantidade e valor dos itens da O.S
     if(isset($_POST['atualizar_itens'])){
 
         // Quantidade e valor já foram salvos no bloco do início do arquivo

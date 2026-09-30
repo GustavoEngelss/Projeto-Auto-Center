@@ -356,7 +356,7 @@
                                                                 
                                                                 <th>Código</th>
                                                                 <th>Nome</th>
-                                                                <th>Unidades</th>
+                                                                <th>Quantidade</th>
                                                                 <th>Valor</th>
                                                                 <th></th>
 
@@ -404,6 +404,7 @@
                                                     <th>Código</th>
                                                     <th>Produto/Serviço</th>
                                                     <th>Quantidade</th>
+                                                    <th>Estoque</th>
                                                     <th>Unitário</th>
                                                     <th>Total</th>
                                                     <th></th>
@@ -419,6 +420,7 @@
 
                                                     <?php
                                                         $qtd        = $produto['quantidade'] ?? 1;
+                                                        $estoq      = $produto['qntd'];
                                                         $unitario   = $produto['valor_ofertado'] ?? $produto['valor'];
                                                         $total_item = $qtd * $unitario;
                                                         $total_os  += $total_item;
@@ -429,10 +431,16 @@
 
                                                         <td><?= htmlspecialchars($produto['nome']) ?></td>
 
-                                                        <td>
+                                                        <td class="col-md-1 text-center">
                                                             <input type="number" name="quantidade[<?= $produto['id'] ?>]"
                                                                 value="<?= $qtd ?>" min="1"
-                                                                class="form-control qntd-itens">
+                                                                class="form-control qntd-itens text-center">
+                                                        </td>
+
+                                                        <td>
+
+                                                            <span class="d-block text-center"><?= $estoq?></span>
+                                                            
                                                         </td>
 
                                                         <td>

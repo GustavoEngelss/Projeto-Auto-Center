@@ -40,11 +40,11 @@
     //API 01 Criando usuario 
     if(isset($_POST['create_usuario'])){
         //pega os dados do forulario e joga para a variavel 
-        $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
-        $usuario = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
-        $senha = trim($_POST['senha']);
+        $nome       = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
+        $usuario    = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
+        $senha      = trim($_POST['senha']);
         $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-        $fone = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
+        $fone       = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
 
         //validação campo vazio
         if(empty($nome) || empty($usuario) || empty($senha) || empty($fone)){
@@ -74,9 +74,9 @@
         $usuario_id = mysqli_real_escape_string($mysqli, $_POST['usuario_id']);
 
         //pega os dados do forulario e joga para a variavel 
-        $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
-        $usuario = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
-        $fone = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
+        $nome       = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
+        $usuario    = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
+        $fone       = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
 
 
         //validação campo vazio
@@ -418,5 +418,10 @@
         exit;
     }
 
+    //API 11 Abrir O.S
+    if(isset($_POST['abrir_os'])){
+
+    }
+    
 
 ?>

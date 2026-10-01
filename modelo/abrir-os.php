@@ -143,7 +143,11 @@
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Cód:</label>
                                                         <div class="col-sm-10">
-                                                            <p class="form-control border-0"><?= $cliente['id'] ?></p>
+                                                            <p class="form-control border-0" name="cliente-id">
+                                                                
+                                                                <?= $cliente['id'] ?>
+                                                            
+                                                            </p>
                                                         </div>
                                                     </div>
 
@@ -536,7 +540,7 @@
                                 <!--Botões-->
                                 <div class="col-md-3 d-flex float-right">
 
-                                    <button class="btn btn-success mr-2 px-3" name="" >Abrir O.S</button>
+                                    <button class="btn btn-success mr-2 px-3" name="abrir_os" >Abrir O.S</button>
 
                                     <a href="../paginas/ordem-servico.php" class="btn btn-danger px-3">Fechar a O.S</a>
 
@@ -558,6 +562,41 @@
         if (window.location.hash) {
             $('a[href="' + window.location.hash + '"]').tab('show');
         }
+
+        function paraNumero(v) {
+            return parseFloat(String(v).replace(/\./g, '').replace(',', '.')) || 0;
+        }
+        function paraMoeda(n) {
+            return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        // Recalcula ao digitar quantidade ou valor
+        $(document).on('input', '.qntd-itens, .valor-unitario', function () {
+            var totalGeral = 0;
+
+            $('#itens tbody tr').each(function () {
+                var qtd      = parseFloat($(this).find('.qntd-itens').val()) || 0;
+                var unitario = paraNumero($(this).find('.valor-unitario').val());
+                var total    = qtd * unitario;
+
+                $(this).find('.total-item').text(paraMoeda(total));
+                totalGeral += total;
+            });
+
+            $('#total-geral, #total-fechamento').val(paraMoeda(totalGeral));
+        });
+        // Enter não envia o form por acidente
+        $('form').on('keydown', 'input', function (e) {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+
+            var nome = $(this).attr('name') || '';
+
+            if (nome === 'cliente') {
+                $('button[name="busca_cliente"]').click();
+            } else if (['id', 'largura', 'perfil', 'aro', 'pesquisa'].includes(nome)) {
+                $('button[name="busca_produto"]').click();
+            }
+        });
 
     </script>
     <?php

@@ -1,6 +1,8 @@
 <?php 
     require_once "../assets/menu.php";
     require_once "../protec.php";
+    require_once "../conexao.php";
+
 ?>
 <html lang="pt-br">
 <head>
@@ -47,19 +49,97 @@
                                 <th>Data</th>
                             </tr>
                         </thead>
+                        
+                        <!--Consulta para o resultado-->
+                        <?php
+
+                            $sql = "SELECT 
+                                        os.id,
+                                        c.nome AS cliente,
+                                        m.nome AS marca,
+                                        mo.nome AS modelo,
+                                        os.placa,
+                                        u.nome AS vendedor,
+                                        os.total,
+                                        os.status,
+                                        os.criado_em
+                                    FROM ordem_servico os
+
+                                    INNER JOIN clientes c
+                                        ON c.id = os.cliente_id
+
+                                    LEFT JOIN usuarios u
+                                    ON u.id_usuario = os.usuario_id
+
+                                    LEFT JOIN marcas m
+                                        ON m.id = os.marca_id
+
+                                    LEFT JOIN modelos mo
+                                        ON mo.id = os.modelo_id
+
+                                    ORDER BY os.id DESC";
+
+                            $resultado = $mysqli->query($sql);
+
+                        ?>
+
                         <tbody>
 
-                            <tr>
-                                <td>1254</td>
-                                <td>João Miguel</td>
-                                <td>VW/Gol</td>
-                                <td>ISI-9873</td>
-                                <td>Gustavo</td>
-                                <td>R$1750,00</td>
-                                <td>Aberta</td>
-                                <td>25/04/2026</td>
-                            </tr>
+                            <?php while($os = $resultado->fetch_assoc()): ?>
 
+                                <tr>
+
+                                    <!-- Nº O.S -->
+                                    <td>
+                                        <?= $os['id'] ?>
+                                    </td>
+
+                                    <!-- Cliente -->
+                                    <td>
+                                        <?= htmlspecialchars($os['cliente']) ?>
+                                    </td>
+
+                                    <!-- Carro -->
+                                    <td>
+                                        <?php if($os['marca'] && $os['modelo']): ?>
+
+                                            <?= htmlspecialchars($os['marca']) ?>/<?= htmlspecialchars($os['modelo']) ?>
+
+                                        <?php else: ?>
+
+                                            Avulso
+
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <!-- Placa -->
+                                    <td>
+                                        <?= htmlspecialchars($os['placa']) ?>
+                                    </td>
+
+                                    <!-- Vendedor -->
+                                    <td>
+                                        <?= htmlspecialchars($os['vendedor']) ?>
+                                    </td>
+
+                                    <!-- Valor -->
+                                    <td>
+                                        R$ <?= number_format($os['total'], 2, ',', '.') ?>
+                                    </td>
+
+                                    <!-- Status -->
+                                    <td>
+                                        <?= htmlspecialchars($os['status']) ?>
+                                    </td>
+
+                                    <!-- Data -->
+                                    <td>
+                                        <?= date('d/m/Y', strtotime($os['criado_em'])) ?>
+                                    </td>
+
+                                </tr>
+
+                            <?php endwhile; ?>
 
                         </tbody>
 

@@ -143,25 +143,36 @@
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Cód:</label>
                                                         <div class="col-sm-10">
+
                                                             <p class="form-control border-0" name="cliente-id">
                                                                 
                                                                 <?= $cliente['id'] ?>
                                                             
                                                             </p>
+                                                            <input type="hidden" name="cliente_id" value="<?= $cliente['id'] ?>">
+                                                            
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Nome:</label>
                                                         <div class="col-sm-10">
-                                                            <p class="form-control border-0"><?= $cliente['nome'] ?></p>
+
+                                                            <p class="form-control border-0" name="marca_id">
+                                                                <?= $cliente['nome'] ?>
+                                                            </p>
+
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row mb-2">
                                                         <label class="col-sm-2 col-form-label">Telefone:</label>
                                                         <div class="col-sm-10">
-                                                            <p class="form-control border-0"><?= $cliente['telefone'] ?></p>
+
+                                                            <p class="form-control border-0">
+                                                                <?= $cliente['telefone'] ?>
+                                                            </p>
+
                                                         </div>
                                                     </div>
 
@@ -186,7 +197,7 @@
 
                                             <label>Marca</label>
 
-                                            <select name="marca" id="marca" class="custom-select">
+                                            <select name="marca_id" id="marca" class="custom-select">
 
                                                 <option value="">Avulso</option>
 
@@ -212,7 +223,7 @@
 
                                             <label>Modelo</label>
 
-                                            <select name="modelo" id="modelo" class="custom-select">
+                                            <select name="modelo_id" id="modelo" class="custom-select">
 
                                                 <option value="">Avulso</option>
 
@@ -436,7 +447,8 @@
                                                         <td><?= htmlspecialchars($produto['nome']) ?></td>
 
                                                         <td class="col-md-1 text-center">
-                                                            <input type="number" name="quantidade[<?= $produto['id'] ?>]"
+                                                            <input type="number" 
+                                                                name="quantidade[<?= $produto['id'] ?>]"
                                                                 value="<?= $qtd ?>" min="1"
                                                                 class="form-control qntd-itens text-center">
                                                         </td>
@@ -448,7 +460,8 @@
                                                         </td>
 
                                                         <td>
-                                                           <input type="text" inputmode="decimal" name="valor[<?= $produto['id'] ?>]"
+                                                           <input type="text" inputmode="decimal" 
+                                                                name="valor[<?= $produto['id'] ?>]"
                                                                 value="<?= number_format($unitario, 2, ',', '') ?>"
                                                                 class="form-control valor-unitario">
                                                         </td>

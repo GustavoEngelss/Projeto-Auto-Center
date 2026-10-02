@@ -421,7 +421,104 @@
     //API 11 Abrir O.S
     if(isset($_POST['abrir_os'])){
 
+        $usuario_id = $_SESSION['id'];
+        
+        //salva os dados do formulario e salva nas sua variaveis 
+        $cliente    = mysqli_real_escape_string($mysqli, trim($_POST['cliente_id']));
+        $marca = !empty($_POST['marca_id']) ? (int) $_POST['marca_id'] : null;
+        $modelo = !empty($_POST['modelo_id']) ? (int) $_POST['modelo_id'] : null;
+        $ano = !empty($_POST['ano']) ? (int) $_POST['ano'] : null;
+        $placa = !empty($_POST['placa']) ? $_POST['placa'] : 'AVU0000';
+        $km = !empty($_POST['km']) ? (int) $_POST['km'] : null;
+        $pagamento  = mysqli_real_escape_string($mysqli, trim($_POST['pagamento']));
+        $parcela    = mysqli_real_escape_string($mysqli, trim($_POST['parcelas']));
+
+        $marca_sql = $marca === null ? "NULL" : $marca;
+        $modelo_sql = $modelo === null ? "NULL" : $modelo;
+        $ano_sql = $ano === null ? "NULL" : $ano;
+        $km_sql = $km === null ? "NULL" : $km;
+
+        //cria a O.S, passando os dados para o banco
+        $sql = "INSERT INTO ordem_servico
+                (
+                    cliente_id,
+                    usuario_id,
+                    marca_id,
+                    modelo_id,
+                    ano,
+                    placa,
+                    km,
+                    pagamento,
+                    parcelas
+                )
+                VALUES
+                (
+                    '$cliente',
+                    '$usuario_id',
+                    $marca_sql,
+                    $modelo_sql,
+                    $ano_sql,
+                    '$placa',
+                    $km_sql,
+                    '$pagamento',
+                    '$parcela'
+                )";
+        
+        $mysqli->query($sql);
+
+        //Pega o ID da O.S
+        $os_id = $mysqli->insert_id;
+        //adiciona os produtos
+        $total = 0;
+
+        $quantidades = $_POST['quantidade'] ?? [];
+        $valores = $_POST['valor'] ?? [];
+
+        foreach($quantidades as $produto_id => $quantidade){
+
+            $quantidade = (int) $quantidade;
+
+            $valor = $valores[$produto_id] ?? 0;
+
+            // transforma 350,00 em 350.00
+            $valor = str_replace('.', '', $valor);
+            $valor = str_replace(',', '.', $valor);
+
+            $valor = (float) $valor;
+
+            $subtotal = $quantidade * $valor;
+            $total += $subtotal;
+
+
+            $sql_item = "INSERT INTO itens_os
+                        (
+                            os_id,
+                            produto_id,
+                            quantidade,
+                            valor_unitario
+                        )
+                        VALUES
+                        (
+                            '$os_id',
+                            '$produto_id',
+                            '$quantidade',
+                            '$valor'
+                        )";
+            
+            $mysqli->query($sql_item);
+
+        }
+
+        //autaliza o valor da o.s
+        $sql_total = "UPDATE ordem_servico
+                        SET total = '$total'
+                        WHERE id = '$os_id'";
+        
+        $mysqli->query($sql_total);
+
+        $_SESSION['mensagem'] = "O.S criada com sucesso!";
+
+        header("Location: ../paginas/ordem-servico.php");
     }
-    
 
 ?>

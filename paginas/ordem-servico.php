@@ -33,8 +33,23 @@
             </form>
 
         </header>
-
             <div class="p-3">
+                
+                    <!--Mensagem-->
+                    <?php if(isset($_SESSION['mensagem'])): ?>
+
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <?= $_SESSION['mensagem']; ?>
+
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <?php unset($_SESSION['mensagem']); ?>
+
+                    <?php endif; ?>
+
                     <table class="table table-hover text-center">
 
                         <thead class="thead-light">

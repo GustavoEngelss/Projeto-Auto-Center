@@ -517,8 +517,8 @@
         $mysqli->query($sql_total);
 
         $_SESSION['mensagem'] = "O.S criada com sucesso!";
-
         header("Location: ../paginas/ordem-servico.php");
+        exit;
     }
 
 ?>

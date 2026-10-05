@@ -418,105 +418,89 @@
         exit;
     }
 
-    //API 11 Abrir O.S
+    //API 11 Abri e edita O.S
     if(isset($_POST['abrir_os'])){
 
         $usuario_id = $_SESSION['id'];
-        
-        //salva os dados do formulario e salva nas sua variaveis 
+
+        // Se veio da edição, a sessão guarda o id da O.S
+        $os_id_edicao = !empty($_SESSION['os']['id']) ? (int) $_SESSION['os']['id'] : null;
+
         $cliente    = mysqli_real_escape_string($mysqli, trim($_POST['cliente_id']));
-        $marca = !empty($_POST['marca_id']) ? (int) $_POST['marca_id'] : null;
-        $modelo = !empty($_POST['modelo_id']) ? (int) $_POST['modelo_id'] : null;
-        $ano = !empty($_POST['ano']) ? (int) $_POST['ano'] : null;
-        $placa = !empty($_POST['placa']) ? $_POST['placa'] : 'AVU0000';
-        $km = !empty($_POST['km']) ? (int) $_POST['km'] : null;
+        $marca      = !empty($_POST['marca_id']) ? (int) $_POST['marca_id'] : null;
+        $modelo     = !empty($_POST['modelo_id']) ? (int) $_POST['modelo_id'] : null;
+        $ano        = !empty($_POST['ano']) ? (int) $_POST['ano'] : null;
+        $placa      = !empty($_POST['placa']) ? mysqli_real_escape_string($mysqli, trim($_POST['placa'])) : 'AVU0000';
+        $km         = !empty($_POST['km']) ? (int) $_POST['km'] : null;
         $pagamento  = mysqli_real_escape_string($mysqli, trim($_POST['pagamento']));
         $parcela    = mysqli_real_escape_string($mysqli, trim($_POST['parcelas']));
 
-        $marca_sql = $marca === null ? "NULL" : $marca;
+        $marca_sql  = $marca  === null ? "NULL" : $marca;
         $modelo_sql = $modelo === null ? "NULL" : $modelo;
-        $ano_sql = $ano === null ? "NULL" : $ano;
-        $km_sql = $km === null ? "NULL" : $km;
+        $ano_sql    = $ano    === null ? "NULL" : $ano;
+        $km_sql     = $km     === null ? "NULL" : $km;
 
-        //cria a O.S, passando os dados para o banco
-        $sql = "INSERT INTO ordem_servico
-                (
-                    cliente_id,
-                    usuario_id,
-                    marca_id,
-                    modelo_id,
-                    ano,
-                    placa,
-                    km,
-                    pagamento,
-                    parcelas
-                )
-                VALUES
-                (
-                    '$cliente',
-                    '$usuario_id',
-                    $marca_sql,
-                    $modelo_sql,
-                    $ano_sql,
-                    '$placa',
-                    $km_sql,
-                    '$pagamento',
-                    '$parcela'
-                )";
-        
-        $mysqli->query($sql);
+        if ($os_id_edicao) {
 
-        //Pega o ID da O.S
-        $os_id = $mysqli->insert_id;
-        //adiciona os produtos
+            //atualiza a O.S existente 
+            $os_id = $os_id_edicao;
+
+            $sql = "UPDATE ordem_servico SET
+                        cliente_id = '$cliente',
+                        marca_id   = $marca_sql,
+                        modelo_id  = $modelo_sql,
+                        ano        = $ano_sql,
+                        placa      = '$placa',
+                        km         = $km_sql,
+                        pagamento  = '$pagamento',
+                        parcelas   = '$parcela'
+                    WHERE id = $os_id";
+            $mysqli->query($sql);
+
+            // Apaga os itens antigos; os atuais da tela são regravados abaixo
+            $mysqli->query("DELETE FROM itens_os WHERE os_id = $os_id");
+
+            $mensagem = "O.S atualizada com sucesso!";
+
+        } else {
+
+            //nova o.s
+            $sql = "INSERT INTO ordem_servico
+                    (cliente_id, usuario_id, marca_id, modelo_id, ano, placa, km, pagamento, parcelas)
+                    VALUES
+                    ('$cliente', '$usuario_id', $marca_sql, $modelo_sql, $ano_sql, '$placa', $km_sql, '$pagamento', '$parcela')";
+            $mysqli->query($sql);
+
+            $os_id = $mysqli->insert_id;
+            $mensagem = "O.S criada com sucesso!";
+        }
+
+        //itens tando para editar e abrir
         $total = 0;
 
         $quantidades = $_POST['quantidade'] ?? [];
-        $valores = $_POST['valor'] ?? [];
+        $valores     = $_POST['valor'] ?? [];
 
         foreach($quantidades as $produto_id => $quantidade){
 
+            $produto_id = (int) $produto_id;
             $quantidade = (int) $quantidade;
 
             $valor = $valores[$produto_id] ?? 0;
-
-            // transforma 350,00 em 350.00
             $valor = str_replace('.', '', $valor);
             $valor = str_replace(',', '.', $valor);
-
             $valor = (float) $valor;
 
-            $subtotal = $quantidade * $valor;
-            $total += $subtotal;
+            $total += $quantidade * $valor;
 
-
-            $sql_item = "INSERT INTO itens_os
-                        (
-                            os_id,
-                            produto_id,
-                            quantidade,
-                            valor_unitario
-                        )
-                        VALUES
-                        (
-                            '$os_id',
-                            '$produto_id',
-                            '$quantidade',
-                            '$valor'
-                        )";
-            
-            $mysqli->query($sql_item);
-
+            $mysqli->query("INSERT INTO itens_os (os_id, produto_id, quantidade, valor_unitario)
+                            VALUES ('$os_id', '$produto_id', '$quantidade', '$valor')");
         }
 
-        //autaliza o valor da o.s
-        $sql_total = "UPDATE ordem_servico
-                        SET total = '$total'
-                        WHERE id = '$os_id'";
-        
-        $mysqli->query($sql_total);
+        $mysqli->query("UPDATE ordem_servico SET total = '$total' WHERE id = '$os_id'");
 
-        $_SESSION['mensagem'] = "O.S criada com sucesso!";
+        unset($_SESSION['os']);
+        $_SESSION['mensagem'] = $mensagem;
         header("Location: ../paginas/ordem-servico.php");
         exit;
     }

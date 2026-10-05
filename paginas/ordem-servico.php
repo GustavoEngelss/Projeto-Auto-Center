@@ -106,7 +106,7 @@
 
                                     <!-- Nº O.S -->
                                     <td>
-                                        <?= $os['id'] ?>
+                                        <a href="../modelo/abrir-os.php?id=<?= (int) $os['id'] ?>" class="text-decoration-none"><?= $os['id'] ?></a>
                                     </td>
 
                                     <!-- Cliente -->

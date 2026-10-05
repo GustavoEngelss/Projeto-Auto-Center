@@ -15,6 +15,69 @@
     require_once "../conexao.php";
     require_once "../protec.php";
 
+    // Abrindo uma O.S existente para edição
+    if(isset($_GET['id'])){
+        
+        //salva o id selecionado
+        $id_os = (int) $_GET['id'];
+
+        $sql = $mysqli->prepare("SELECT * FROM ordem_servico WHERE id = ?");
+        $sql->bind_param("i", $id_os);
+        $sql->execute();
+        $dados = $sql->get_result()->fetch_assoc();
+
+        if(!$dados) {
+
+            $_SESSION['mensagem'] = "O.S não encontrada.";
+            header('Location: ../paginas/ordem-servico.php');
+            exit;
+
+        }
+
+        //cliente
+        $sql = $mysqli->prepare("SELECT id, nome, telefone FROM clientes WHERE id = ?");
+        $sql->bind_param("i", $dados['cliente_id']);
+        $sql->execute();
+        $cliente = $sql->get_result()->fetch_assoc();
+
+        //itens
+        $sql = $mysqli->prepare("
+
+            SELECT
+                p.id, p.nome, p.qntd, p.valor,
+                i.quantidade, i.valor_unitario AS valor_ofertado
+            FROM itens_os i
+            INNER JOIN produtos p ON p.id = i.produto_id
+            WHERE i.os_id = ?
+
+        ");
+        
+        $sql->bind_param("i", $id_os);
+        $sql->execute();
+        $itens = $sql->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        // Monta a sessão no mesmo formato que a página já usa
+        $_SESSION['os'] = [
+
+            'id'        => $id_os,                 
+            'cliente'   => $cliente ? [$cliente] : [],
+            'veiculo'   => [
+                'marca'  => $dados['marca_id'],
+                'modelo' => $dados['modelo_id'],
+                'ano'    => $dados['ano'],
+                'placa'  => $dados['placa'],
+                'km'     => $dados['km'],
+            ],
+            'itens'     => $itens,
+            'produtos'  => [],
+            'busca'     => ['parcelas' => $dados['parcelas']],
+            'pagamento' => $dados['pagamento'],
+            'parcelas'  => $dados['parcelas'],
+
+        ];
+
+    }
+
 
     //variveis com nome menores para facilitar
     $os             = $_SESSION['os'] ?? [];
@@ -25,6 +88,8 @@
     $veiculo        = $os['veiculo'] ?? [];
     $pagamento      = $os['pagamento'] ?? '';
     $parcelas       = $os['parcelas'] ?? '';
+
+    $editando = !empty($os['id']);
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +112,7 @@
     <section class="conteudo">
 
         <header class="cabecalho-clientes">
-            <h1>Abrindo Ordem de Serviço</h1>
+            <h1><?= $editando ? 'Editando O.S nº ' . $os['id'] : 'Abrindo Ordem de Serviço' ?></h1>
         </header>
 
         <div class="container mt-4">
@@ -553,7 +618,9 @@
                                 <!--Botões-->
                                 <div class="col-md-3 d-flex float-right">
 
-                                    <button class="btn btn-success mr-2 px-3" name="abrir_os" >Abrir O.S</button>
+                                    <button class="btn btn-success mr-2 px-3" name="abrir_os">
+                                        <?= $editando ? 'Salvar alterações' : 'Abrir O.S' ?>
+                                    </button>
 
                                     <a href="../paginas/ordem-servico.php" class="btn btn-danger px-3">Fechar a O.S</a>
 

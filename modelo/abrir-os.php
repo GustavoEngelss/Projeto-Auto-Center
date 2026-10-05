@@ -622,7 +622,16 @@
                                         <?= $editando ? 'Salvar alterações' : 'Abrir O.S' ?>
                                     </button>
 
-                                    <a href="../paginas/ordem-servico.php" class="btn btn-danger px-3">Fechar a O.S</a>
+                                    <?php if ($editando): ?>
+
+                                        <input type="hidden" name="os_id" value="<?= (int) $os['id'] ?>">
+
+                                        <button class="btn btn-danger mr-2 px-3" name="encerrar_os"
+                                                onclick="return confirm('Encerrar a O.S e dar baixa no estoque?')">
+                                            Encerrar O.S
+                                        </button>
+
+                                    <?php endif; ?>
 
                                 </div>
                             

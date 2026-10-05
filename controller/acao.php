@@ -505,4 +505,5 @@
         exit;
     }
 
+    //API 12 Encerrando a O.S
 ?>

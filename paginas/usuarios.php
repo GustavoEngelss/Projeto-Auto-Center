@@ -25,9 +25,9 @@
         <header class="cabecalho-usuario">
  
             <h1>Funcionários</h1>
-            
+
             <!--Botão-->
-            <a href="../modelo/add-usuario.php" class="btn btn-primary">
+            <a href="../modelo/add-usuario.php" class="btn btn-primary bnt-usuario">
                 <i class="bi bi-plus-lg"></i> Novo Funcioário
             </a>
 

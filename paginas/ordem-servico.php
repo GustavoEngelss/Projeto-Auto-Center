@@ -33,135 +33,136 @@
             </form>
 
         </header>
-            <div class="p-3">
-                
-                    <!--Mensagem-->
-                    <?php if(isset($_SESSION['mensagem'])): ?>
+        
+        <div class="p-3">
+    
+                <!--Mensagem-->
+                <?php if(isset($_SESSION['mensagem'])): ?>
 
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <?= $_SESSION['mensagem']; ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <?= $_SESSION['mensagem']; ?>
 
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
 
-                        <?php unset($_SESSION['mensagem']); ?>
+                    <?php unset($_SESSION['mensagem']); ?>
 
-                    <?php endif; ?>
+                <?php endif; ?>
 
-                    <table class="table table-hover text-center">
+                <table class="table table-hover text-center">
 
-                        <thead class="thead-light">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Nº O.S</th>
+                            <th>Cliente</th>
+                            <th>Carro</th>
+                            <th>Placa</th>
+                            <th>Vendedor</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    
+                    <!--Consulta para o resultado-->
+                    <?php
+
+                        $sql = "SELECT 
+                                    os.id,
+                                    c.nome AS cliente,
+                                    m.nome AS marca,
+                                    mo.nome AS modelo,
+                                    os.placa,
+                                    u.nome AS vendedor,
+                                    os.total,
+                                    os.status,
+                                    os.criado_em
+                                FROM ordem_servico os
+
+                                INNER JOIN clientes c
+                                    ON c.id = os.cliente_id
+
+                                LEFT JOIN usuarios u
+                                ON u.id_usuario = os.usuario_id
+
+                                LEFT JOIN marcas m
+                                    ON m.id = os.marca_id
+
+                                LEFT JOIN modelos mo
+                                    ON mo.id = os.modelo_id
+
+                                WHERE os.status = 'Aberta'
+
+                                ORDER BY os.id DESC";
+
+                        $resultado = $mysqli->query($sql);
+
+                    ?>
+
+                    <tbody>
+
+                        <?php while($os = $resultado->fetch_assoc()): ?>
+
                             <tr>
-                                <th>Nº O.S</th>
-                                <th>Cliente</th>
-                                <th>Carro</th>
-                                <th>Placa</th>
-                                <th>Vendedor</th>
-                                <th>Valor</th>
-                                <th>Status</th>
-                                <th>Data</th>
+
+                                <!-- Nº O.S -->
+                                <td>
+                                    <a href="../modelo/abrir-os.php?id=<?= (int) $os['id'] ?>" class="text-decoration-none"><?= $os['id'] ?></a>
+                                </td>
+
+                                <!-- Cliente -->
+                                <td>
+                                    <?= htmlspecialchars($os['cliente']) ?>
+                                </td>
+
+                                <!-- Carro -->
+                                <td>
+                                    <?php if($os['marca'] && $os['modelo']): ?>
+
+                                        <?= htmlspecialchars($os['marca']) ?>/<?= htmlspecialchars($os['modelo']) ?>
+
+                                    <?php else: ?>
+
+                                        Avulso
+
+                                    <?php endif; ?>
+                                </td>
+
+                                <!-- Placa -->
+                                <td>
+                                    <?= htmlspecialchars($os['placa']) ?>
+                                </td>
+
+                                <!-- Vendedor -->
+                                <td>
+                                    <?= htmlspecialchars($os['vendedor']) ?>
+                                </td>
+
+                                <!-- Valor -->
+                                <td>
+                                    R$ <?= number_format($os['total'], 2, ',', '.') ?>
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+                                    <?= htmlspecialchars($os['status']) ?>
+                                </td>
+
+                                <!-- Data -->
+                                <td>
+                                    <?= date('d/m/Y', strtotime($os['criado_em'])) ?>
+                                </td>
+
                             </tr>
-                        </thead>
-                        
-                        <!--Consulta para o resultado-->
-                        <?php
 
-                            $sql = "SELECT 
-                                        os.id,
-                                        c.nome AS cliente,
-                                        m.nome AS marca,
-                                        mo.nome AS modelo,
-                                        os.placa,
-                                        u.nome AS vendedor,
-                                        os.total,
-                                        os.status,
-                                        os.criado_em
-                                    FROM ordem_servico os
+                        <?php endwhile; ?>
 
-                                    INNER JOIN clientes c
-                                        ON c.id = os.cliente_id
+                    </tbody>
 
-                                    LEFT JOIN usuarios u
-                                    ON u.id_usuario = os.usuario_id
-
-                                    LEFT JOIN marcas m
-                                        ON m.id = os.marca_id
-
-                                    LEFT JOIN modelos mo
-                                        ON mo.id = os.modelo_id
-
-                                    WHERE os.status = 'Aberta'
-
-                                    ORDER BY os.id DESC";
-
-                            $resultado = $mysqli->query($sql);
-
-                        ?>
-
-                        <tbody>
-
-                            <?php while($os = $resultado->fetch_assoc()): ?>
-
-                                <tr>
-
-                                    <!-- Nº O.S -->
-                                    <td>
-                                        <a href="../modelo/abrir-os.php?id=<?= (int) $os['id'] ?>" class="text-decoration-none"><?= $os['id'] ?></a>
-                                    </td>
-
-                                    <!-- Cliente -->
-                                    <td>
-                                        <?= htmlspecialchars($os['cliente']) ?>
-                                    </td>
-
-                                    <!-- Carro -->
-                                    <td>
-                                        <?php if($os['marca'] && $os['modelo']): ?>
-
-                                            <?= htmlspecialchars($os['marca']) ?>/<?= htmlspecialchars($os['modelo']) ?>
-
-                                        <?php else: ?>
-
-                                            Avulso
-
-                                        <?php endif; ?>
-                                    </td>
-
-                                    <!-- Placa -->
-                                    <td>
-                                        <?= htmlspecialchars($os['placa']) ?>
-                                    </td>
-
-                                    <!-- Vendedor -->
-                                    <td>
-                                        <?= htmlspecialchars($os['vendedor']) ?>
-                                    </td>
-
-                                    <!-- Valor -->
-                                    <td>
-                                        R$ <?= number_format($os['total'], 2, ',', '.') ?>
-                                    </td>
-
-                                    <!-- Status -->
-                                    <td>
-                                        <?= htmlspecialchars($os['status']) ?>
-                                    </td>
-
-                                    <!-- Data -->
-                                    <td>
-                                        <?= date('d/m/Y', strtotime($os['criado_em'])) ?>
-                                    </td>
-
-                                </tr>
-
-                            <?php endwhile; ?>
-
-                        </tbody>
-
-                    </table>
-                </div>
+                </table>
+            </div>
     </section>
 
     <script src="../assets/js/script.js"></script>

@@ -1,4 +1,6 @@
 .cabecalho-usuario{
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     background-color: rgb(44, 43, 43);
     padding: 25px;
@@ -16,7 +18,6 @@
     gap: 20px;
 }
 .bnt-usuario{
-    background: #28a745;
     padding: 12px 25px;
     border: none;
     border-radius: 8px;

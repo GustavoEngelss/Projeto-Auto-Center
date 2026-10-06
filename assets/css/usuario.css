@@ -1,11 +1,14 @@
 .cabecalho-usuario{
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     background-color: rgb(44, 43, 43);
-    padding: 20px;
+    padding: 25px;
     color: white;
     border-bottom: 4px solid rgb(255, 89, 80);
+}
+.cabecalho-orcamento h1 {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 600;
 }
 .acao{
     display: flex;

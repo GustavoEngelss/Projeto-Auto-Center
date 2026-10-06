@@ -23,35 +23,15 @@
     <section class="conteudo">
 
         <header class="cabecalho-usuario">
-            <h2>G.A Pneus</h2>
-        </header>
-
-        <div class="card-header d-flex justify-content-between align-items-center">
+ 
+            <h1>Funcionários</h1>
             
-            <!--Titulo do header-->
-            <div class="d-flex align-items-center ml-4">
-
-                <div class="mr-3 mt-0">
-                    <i class="bi bi-people-fill" style="font-size: 58px;"></i>
-                </div>
-                
-                <div>
-
-                    <h2 class="mt-3 mb-0 font-weight-bold">Funcionários</h2>
-                    <p>Gerencimaneto de Funcionários</p>
-
-                </div>
-
-            </div>
-
             <!--Botão-->
             <a href="../modelo/add-usuario.php" class="btn btn-primary">
-
                 <i class="bi bi-plus-lg"></i> Novo Funcioário
-
             </a>
 
-        </div>
+        </header>
 
         <div class="card-body container mt-2">
 

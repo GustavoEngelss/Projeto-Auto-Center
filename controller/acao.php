@@ -10,11 +10,11 @@
 
         // Veículo
         $_SESSION['os']['veiculo'] = [
-            'marca'  => $_POST['marca']  ?? '',
-            'modelo' => $_POST['modelo'] ?? '',
-            'ano'    => $_POST['ano']    ?? '',
-            'placa'  => $_POST['placa']  ?? '',
-            'km'     => $_POST['km']     ?? '',
+            'marca'  => $_POST['marca_id']  ?? '',
+            'modelo' => $_POST['modelo_id'] ?? '',
+            'ano'    => $_POST['ano']       ?? '',
+            'placa'  => $_POST['placa']     ?? '',
+            'km'     => $_POST['km']        ?? '',
         ];
 
         // Quantidade e valor dos itens
@@ -30,7 +30,8 @@
                 }
 
                 if(isset($_POST['valor'][$id])){
-                    $valor = (float) $_POST['valor'][$id];
+                    $valor = str_replace('.', '', $_POST['valor'][$id]);
+                    $valor = (float) str_replace(',', '.', $valor);
                     $_SESSION['os']['itens'][$i]['valor_ofertado'] = max(0, $valor);
                 }
             }
@@ -508,61 +509,41 @@
     //API 12 Encerrando a O.S
     if (isset($_POST['encerrar_os'])) {
 
-        $id_os = (int) ($_POST['os_id'] ?? 0);
+        $id_os = $_POST['os_id'];
 
-        $mysqli->begin_transaction();
+        // Busca os produtos da O.S.
+        $sql = $mysqli->query("
+            SELECT produto_id, quantidade
+            FROM itens_os
+            WHERE os_id = $id_os
+        ");
 
-        try {
-            // Trava a O.S e confere se já não foi encerrada
-            $sql = $mysqli->prepare("SELECT status FROM ordem_servico WHERE id = ? FOR UPDATE");
-            $sql->bind_param("i", $id_os);
-            $sql->execute();
-            $os = $sql->get_result()->fetch_assoc();
+        while ($item = $sql->fetch_assoc()) {
 
-            if (!$os || $os['status'] === 'Encerrada') {
-                throw new Exception("O.S inexistente ou já encerrada.");
+            if($item['tipo'] != 'Serviço'){
+                $produto_id = $item['produto_id'];
+                $quantidade = $item['quantidade'];
+
+                // Diminui a quantidade do estoque
+                $mysqli->query("
+                    UPDATE produtos
+                    SET qntd = qntd - $quantidade
+                    WHERE id = $produto_id
+                ");
             }
-
-            // Pega os itens
-            $sql = $mysqli->prepare("
-                SELECT produto_id, quantidade
-                FROM itens_os
-                WHERE os_id = ?
-            ");
-            $sql->bind_param("i", $id_os);
-            $sql->execute();
-            $itens = $sql->get_result()->fetch_all(MYSQLI_ASSOC);
-
-            // Baixa o estoque (só de produtos físicos, não serviços)
-            $baixa = $mysqli->prepare("
-                UPDATE produtos
-                SET qntd = qntd - ?
-                WHERE id = ? AND qntd >= ?
-            ");
-
-            foreach ($itens as $item) {
-                $baixa->bind_param("iii", $item['quantidade'], $item['produto_id'], $item['quantidade']);
-                $baixa->execute();
-
-                if ($baixa->affected_rows === 0) {
-                    throw new Exception("Estoque insuficiente para o produto " . $item['produto_id']);
-                }
-            }
-
-            // Marca como encerrada
-            $sql = $mysqli->prepare("UPDATE ordem_servico SET status = 'Encerrada' WHERE id = ?");
-            $sql->bind_param("i", $id_os);
-            $sql->execute();
-
-            $mysqli->commit();
-            $_SESSION['mensagem'] = "O.S encerrada e estoque atualizado.";
-
-        } catch (Exception $e) {
-            $mysqli->rollback();
-            $_SESSION['mensagem'] = $e->getMessage();
         }
 
+        // Encerra a O.S.
+        $mysqli->query("
+            UPDATE ordem_servico
+            SET status = 'Encerrada'
+            WHERE id = $id_os
+        ");
+
+        $_SESSION['mensagem'] = "O.S encerrada com sucesso.";
+
         unset($_SESSION['os']);
+
         header('Location: ../paginas/ordem-servico.php');
         exit;
     }

@@ -517,26 +517,67 @@
 
         $id_os = $_POST['os_id'];
 
-        // Busca os produtos da O.S.
+        // Busca os produtos da O.S. junto com o estoque atual
         $sql = $mysqli->query("
-            SELECT produto_id, quantidade
+            SELECT 
+                itens_os.produto_id,
+                itens_os.quantidade,
+                produtos.nome,
+                produtos.tipo,
+                produtos.qntd
             FROM itens_os
-            WHERE os_id = $id_os
+            INNER JOIN produtos 
+                ON produtos.id = itens_os.produto_id
+            WHERE itens_os.os_id = $id_os
+        ");
+
+        // Primeiro verifica se existe estoque suficiente
+        while ($item = $sql->fetch_assoc()) {
+
+            // Serviço não usa estoque
+            if ($item['tipo'] == 'Serviço') {
+                continue;
+            }
+
+            // Se a quantidade da O.S. for maior que o estoque
+            if ($item['quantidade'] > $item['qntd']) {
+
+                $_SESSION['mensagem'] = 
+                    "Não foi possível encerrar a O.S. O produto {$item['nome']} possui apenas {$item['qntd']} unidades em estoque.";
+
+                header('Location: ../paginas/ordem-servico.php');
+                exit;
+            }
+        }
+
+        // Busca novamente os itens para diminuir o estoque
+        $sql = $mysqli->query("
+            SELECT 
+                itens_os.produto_id,
+                itens_os.quantidade,
+                produtos.tipo
+            FROM itens_os
+            INNER JOIN produtos 
+                ON produtos.id = itens_os.produto_id
+            WHERE itens_os.os_id = $id_os
         ");
 
         while ($item = $sql->fetch_assoc()) {
 
-            if($item['tipo'] != 'Serviço'){
-                $produto_id = $item['produto_id'];
-                $quantidade = $item['quantidade'];
-
-                // Diminui a quantidade do estoque
-                $mysqli->query("
-                    UPDATE produtos
-                    SET qntd = qntd - $quantidade
-                    WHERE id = $produto_id
-                ");
+            // Serviço não diminui estoque
+            if ($item['tipo'] == 'Serviço') {
+                continue;
             }
+
+            $produto_id = $item['produto_id'];
+            $quantidade = $item['quantidade'];
+
+            // Diminui a quantidade do estoque
+            $mysqli->query("
+                UPDATE produtos
+                SET qntd = qntd - $quantidade
+                WHERE id = $produto_id
+            ");
         }
 
         // Encerra a O.S.

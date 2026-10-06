@@ -506,4 +506,64 @@
     }
 
     //API 12 Encerrando a O.S
+    if (isset($_POST['encerrar_os'])) {
+
+        $id_os = (int) ($_POST['os_id'] ?? 0);
+
+        $mysqli->begin_transaction();
+
+        try {
+            // Trava a O.S e confere se já não foi encerrada
+            $sql = $mysqli->prepare("SELECT status FROM ordem_servico WHERE id = ? FOR UPDATE");
+            $sql->bind_param("i", $id_os);
+            $sql->execute();
+            $os = $sql->get_result()->fetch_assoc();
+
+            if (!$os || $os['status'] === 'Encerrada') {
+                throw new Exception("O.S inexistente ou já encerrada.");
+            }
+
+            // Pega os itens
+            $sql = $mysqli->prepare("
+                SELECT produto_id, quantidade
+                FROM itens_os
+                WHERE os_id = ?
+            ");
+            $sql->bind_param("i", $id_os);
+            $sql->execute();
+            $itens = $sql->get_result()->fetch_all(MYSQLI_ASSOC);
+
+            // Baixa o estoque (só de produtos físicos, não serviços)
+            $baixa = $mysqli->prepare("
+                UPDATE produtos
+                SET qntd = qntd - ?
+                WHERE id = ? AND qntd >= ?
+            ");
+
+            foreach ($itens as $item) {
+                $baixa->bind_param("iii", $item['quantidade'], $item['produto_id'], $item['quantidade']);
+                $baixa->execute();
+
+                if ($baixa->affected_rows === 0) {
+                    throw new Exception("Estoque insuficiente para o produto " . $item['produto_id']);
+                }
+            }
+
+            // Marca como encerrada
+            $sql = $mysqli->prepare("UPDATE ordem_servico SET status = 'Encerrada' WHERE id = ?");
+            $sql->bind_param("i", $id_os);
+            $sql->execute();
+
+            $mysqli->commit();
+            $_SESSION['mensagem'] = "O.S encerrada e estoque atualizado.";
+
+        } catch (Exception $e) {
+            $mysqli->rollback();
+            $_SESSION['mensagem'] = $e->getMessage();
+        }
+
+        unset($_SESSION['os']);
+        header('Location: ../paginas/ordem-servico.php');
+        exit;
+    }
 ?>

@@ -92,6 +92,8 @@
                                     LEFT JOIN modelos mo
                                         ON mo.id = os.modelo_id
 
+                                    WHERE os.status = 'Aberta'
+
                                     ORDER BY os.id DESC";
 
                             $resultado = $mysqli->query($sql);

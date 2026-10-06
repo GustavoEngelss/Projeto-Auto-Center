@@ -207,15 +207,21 @@
         // Escolhe qual consulta fazer
         if($id != ''){
 
-            $sql = "SELECT * FROM produtos WHERE id = '$id'";
+            $sql = "SELECT * FROM produtos 
+                    WHERE id = '$id'
+                    AND (qntd > 0 OR tipo = 'Serviço')";
 
         } elseif($medida != ''){
 
-            $sql = "SELECT * FROM produtos WHERE nome LIKE '%$medida%'";
+            $sql = "SELECT * FROM produtos 
+                    WHERE nome LIKE '%$medida%'
+                    AND (qntd > 0 OR tipo = 'Serviço')";
 
         } elseif($pesquisa != ''){
 
-            $sql = "SELECT * FROM produtos WHERE nome LIKE '%$pesquisa%'";
+            $sql = "SELECT * FROM produtos 
+                    WHERE nome LIKE '%$pesquisa%'
+                    AND (qntd > 0 OR tipo = 'Serviço')";
 
         } else {
 

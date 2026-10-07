@@ -22,100 +22,79 @@
     <section class="conteudo">
 
         <header class="cabecalho-produto">
-            <h1>Gerenciamento de Produtos</h1>
+            <h1>Gerencimento de Estoque</h1>
         </header>
 
         <div class="container mt-4">
-            <!--Mensagem de erro ou sucesso-->
-            <?php if(isset($_SESSION['mensagem'])): ?>
 
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <?= $_SESSION['mensagem']; ?>
-
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <?php unset($_SESSION['mensagem']); ?>
-
-            <?php endif; ?>
-            <!--Pesquisa do produto-->
             <div class="card">
+
+                <!--Abas da pagina-->
                 <div class="card-header">
-                    <h4>Pesquisar Produto</h4>
+
+                    <ul class="nav nav-tabs card-header-tabs">
+
+                        <li class="nav-item">
+
+                            <a class="nav-link active" data-toggle="tab" href="#estoque">
+                                Estoque
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a class="nav-link" data-toggle="tab" href="#cotacao">
+                                Cotação
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="#encomenda" class="nav-link" data-toggle="tab">
+                                Encomenda
+                            </a>
+
+                        </li>
+
+                    </ul>
+
                 </div>
+
                 <div class="card-body">
-                    <form action="../controller/acao.php" method="post">
-                        <div class="mb-3 d-flex">
-                            <input type="text" name="produto" class="form-control" placeholder="Digite o código ou o nome do produto ...">
-                            <button type="submit" name="select_produto" class="btn btn-primary float-right ml-2">Pesquisar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <br>
-            <!--Resultado da pesquisa-->
-            <div class="card">
-                <div class="card-header">
-                    <h4>Produtos Encontrados</h4>
-                </div>
-                <div class="card_body">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nome</th>
-                            <th>Tipo</th>
-                            <th>Qntd</th>
-                            <th>Valor</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                                // Se a página foi aberta, limpa a pesquisa anterior
-                                if(!isset($_POST['select_produto']) && !isset($_SESSION['pesquisa_realizada'])){
-                                    unset($_SESSION['pesquisa_produto']);
-                                    unset($_SESSION['pesquisa_produto']);
-                                }
-                            ?>
-                            <?php if(isset($_SESSION['pesquisa_produto']) && count($_SESSION['pesquisa_produto']) > 0):?>
-                                <?php foreach($_SESSION['pesquisa_produto'] as $cliente): ?>
-                            <tr>
-                                <td><?= $cliente['id']?></td>
-                                <td><?= $cliente['nome']?></td>
-                                <td><?= $cliente['tipo']?></td>
-                                <td><?= $cliente['qntd']?></td>
-                                <td><?= $cliente['valor']?></td>
-                                <td>
-                                    <a href="" class="btn btn-secondary btn-sm">Editar</a>
-                                </td>
-                            </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <br>
-            <!--solicitar para adicionar produto-->
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
 
-                    <div>
-                        <h4 class="mb-1">Produto não encontrado?</h4>
-                        <p class="mb-0">Faz a solicitação para cadastrar produto.</p>
+                    <div class="tab-content">
+                        
+                        <!--Aba Estoque -->
+                        <div class="tab-pane fade show active" id="estoque">
+
+                            <h1>Estoque</h1>
+
+                        </div>
+
+                        <!--Aba cotação-->
+                        <div class="tab-pane fade show" id="cotacao">
+
+                            <h1>Cotação</h1>
+
+                        </div>
+
+                        <!--Aba encomenda-->
+                        <div class="tab-pane fade show" id="encomenda">
+
+
+                            <h1>Encomenda</h1>
+
+                        </div>
+
+
                     </div>
 
-                    <form action="">
-                        <button type="submit" class="btn btn-primary">
-                            Solicitar
-                        </button>
-                    </form>
-
                 </div>
+
             </div>
+
         </div>
 
     </section>

@@ -120,7 +120,10 @@
                                         <a href="../modelo/edit.php?id=<?= $usuarios['id_usuario'] ?>" class="btn btn-success btn-sm mx-2">Editar</a>
 
                                         <form action="../controller/acao.php" method="post" class="d-inline mx-2">
-                                            <button type="submit" onclick="return confirm('Tem certaza que deseja excluir?')" name="delete_usuario" value="<?= $usuarios['id_usuario'] ?>" class="btn btn-danger btn-sm">Excluir</button>
+                                            <button type="submit" onclick="return confirm('Tem certaza que deseja excluir?')" name="delete_usuario" value="<?= $usuarios['id_usuario'] ?>" class="btn btn-danger btn-sm">
+                                                Excluir
+
+                                            </button>
                                         </form>
 
                                     </td>

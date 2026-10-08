@@ -1,6 +1,7 @@
 <?php 
     require_once "../assets/menu.php";
     require_once "../protec.php";
+    require_once "../conexao.php";
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -69,7 +70,57 @@
                         <!--Aba Estoque -->
                         <div class="tab-pane fade show active" id="estoque">
 
-                            <h1>Estoque</h1>
+                            <h4>Produtos com necessidade de reposição</h4>
+
+                            <table class="table table-hover text-center">
+
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Produto</th>
+                                        <th>Unidade</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>    
+                                        <?php 
+                                        
+                                            //Pega o produto com tipo "Pneu Novo" e qntd menor que "4"
+                                            $sql ="
+                                                SELECT * FROM produtos
+                                                WHERE qntd <= 4 AND tipo ='Pneu Novo'
+                                            ";
+
+                                            $resultado = mysqli_query($mysqli, $sql);
+
+                                            while ($produto = mysqli_fetch_assoc($resultado)) {
+
+                                        ?>
+                                                <!--traz o resultado da consulta-->
+                                                <tr>
+                                                    <td><?= $produto['id'] ?></td>
+                                                    <td><?= htmlspecialchars($produto['nome']) ?></td>
+                                                    <td><?= $produto['qntd'] ?></td>
+                                                    <td>
+
+                                                        <button class="btn btn-primary btn-sm">
+                                                            Abrir Cotação
+                                                        </button>
+
+                                                    </td>
+                                                </tr>
+
+                                        <?php
+                                            }; 
+                                        ?>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
 
                         </div>
 

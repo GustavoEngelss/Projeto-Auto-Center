@@ -87,57 +87,56 @@
 
                             <h4>Produtos com necessidade de reposição</h4>
 
-                            <table class="table table-hover text-center">
-
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Código</th>
-                                        <th>Produto</th>
-                                        <th>Unidade</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    <tr>    
-                                        <?php 
-                                        
-                                            //Pega o produto com tipo "Pneu Novo" e qntd menor que "4"
-                                            $sql ="
-                                                SELECT * FROM produtos
-                                                WHERE qntd <= 4 AND tipo ='Pneu Novo'
-                                            ";
-
-                                            $resultado = mysqli_query($mysqli, $sql);
-
-                                            while ($produto = mysqli_fetch_assoc($resultado)) {
-
-                                        ?>
-                                                <!--traz o resultado da consulta-->
+                            <form action="../controller/acao.php" method="post">
+                                <table class="table table-hover text-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Produto</th>
+                                            <th>Unidade</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php
+                                
+                                                //Pega o produto com tipo "Pneu Novo" e qntd menor que "4"
+                                                $sql ="
+                                                    SELECT * FROM produtos
+                                                    WHERE qntd <= 4 AND tipo ='Pneu Novo'
+                                                ";
+                                                $resultado = mysqli_query($mysqli, $sql);
+                                                while ($produto = mysqli_fetch_assoc($resultado)) {
+                                            ?>
+                                                    <!--traz o resultado da consulta-->
+                                                    <tr>
+                                                        <td><?= $produto['id'] ?></td>
+                                                        <td><?= htmlspecialchars($produto['nome']) ?></td>
+                                                        <td><?= $produto['qntd'] ?></td>
+                                                        <td>
+                                                            <input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>">
+                                                        </td>
+                                
+                                                    </tr>
+                                            <?php
+                                                };
+                                            ?>
+                                            <tfood>
                                                 <tr>
-                                                    <td><?= $produto['id'] ?></td>
-                                                    <td><?= htmlspecialchars($produto['nome']) ?></td>
-                                                    <td><?= $produto['qntd'] ?></td>
-                                                    <td>
-
-                                                        <form action="../controller/acao.php" method="post">
-                                                            <button class="btn btn-primary btn-sm" name="abrir_encomenda" value="<?= $produto['id'] ?>">
-                                                                Encomendar Pneu
-                                                            </button>
-                                                        </form>
-
+                                                    <td colspan="5" class="text-right">
+                                
+                                                        <button class="btn btn-primary btn-sm" name="abrir_encomenda">
+                                                            Encomendar Pneu
+                                                        </button>
+                                
                                                     </td>
                                                 </tr>
-
-                                        <?php
-                                            }; 
-                                        ?>
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
+                                            </tfood>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
 
                         </div>
 

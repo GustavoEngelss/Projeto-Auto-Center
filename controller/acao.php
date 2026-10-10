@@ -596,49 +596,71 @@
     }
     
     //API 13 Abrir cotação
+    
+ // API 13 - Abrir cotação
     if (isset($_POST['abrir_encomenda'])) {
 
-        // Pega o ID do produto enviado pelo botão
-        $produto = (int) $_POST['abrir_encomenda'];
+        // Pega os produtos selecionados
+        $produtos = $_POST['produtos'] ?? [];
 
-        // Consulta o produto
-        $sql = 
-        "
-            SELECT * FROM produtos 
-            WHERE id = $produto
-        ";
-        $resultado = mysqli_query($mysqli, $sql);
-
-        // Verifica se o produto existe
-        if ($resultado && mysqli_num_rows($resultado) > 0) {
-
-            // Cria a cotação
-            $sql = 
-            "
-                INSERT INTO cotacoes 
-                (tipo, status)
-                VALUES 
-                ('Reposição de estoque', 'Aberta')
-            ";
-
-            if (mysqli_query($mysqli, $sql)) {
-
-                // Guarda o ID da cotação criada
-                $id_cotacao = mysqli_insert_id($mysqli);
-
-                $_SESSION['mensagem'] = "Solicitação de encomenda criada com sucesso!";
-
-                header("Location: ../paginas/estoque.php");
-                exit;
-
-            } else {
-                die("Erro ao criar cotação: " . mysqli_error($mysqli));
-            }
-
-        } else {
-            $_SESSION['mensagem'] = "Produto não encontrado.";
+        // Caso não selecione nada
+        if (empty($produtos)) {
+            $_SESSION['mensagem'] = 'Nenhum item selecionado!';
             header("Location: ../paginas/estoque.php");
             exit;
         }
-    }
+
+        // Cria a cotação
+        $sql = "
+            INSERT INTO cotacoes (tipo, status)
+            VALUES ('Reposição de estoque', 'Aberta')
+        ";
+
+        if ($mysqli->query($sql)) {
+
+            // Pega o ID da cotação criada
+            $id_cotacao = $mysqli->insert_id;
+
+            // Percorre os produtos selecionados
+            foreach ($produtos as $id) {
+
+                $id = (int) $id;
+
+                // Insere o produto na cotação
+                $sql = "
+                    INSERT INTO itens_cotacao
+                    (
+                        cotacao_id,
+                        produto_id,
+                        quantidade,
+                        custo_unitario,
+                        margem_percentual,
+                        venda_unitaria
+                    )
+                    VALUES
+                    (
+                        $id_cotacao,
+                        $id,
+                        1,
+                        0.00,
+                        0.00,
+                        0.00
+                    )
+                ";
+
+                if (!$mysqli->query($sql)) {
+                    die("Erro ao inserir item: " . $mysqli->error);
+                }
+            }
+
+            $_SESSION['mensagem'] =
+                "Solicitação de encomenda criada com sucesso!";
+
+            header("Location: ../paginas/estoque.php");
+            exit;
+
+        } else {
+            die("Erro ao criar cotação: " . $mysqli->error);
+        }
+    };
 ?>

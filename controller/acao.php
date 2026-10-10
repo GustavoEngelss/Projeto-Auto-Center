@@ -513,7 +513,7 @@
     }
 
     //API 12 Encerrando a O.S
-    if (isset($_POST['encerrar_os'])) {
+    if(isset($_POST['encerrar_os'])){
 
         $id_os = $_POST['os_id'];
 
@@ -593,5 +593,52 @@
 
         header('Location: ../paginas/ordem-servico.php');
         exit;
+    }
+    
+    //API 13 Abrir cotação
+    if (isset($_POST['abrir_encomenda'])) {
+
+        // Pega o ID do produto enviado pelo botão
+        $produto = (int) $_POST['abrir_encomenda'];
+
+        // Consulta o produto
+        $sql = 
+        "
+            SELECT * FROM produtos 
+            WHERE id = $produto
+        ";
+        $resultado = mysqli_query($mysqli, $sql);
+
+        // Verifica se o produto existe
+        if ($resultado && mysqli_num_rows($resultado) > 0) {
+
+            // Cria a cotação
+            $sql = 
+            "
+                INSERT INTO cotacoes 
+                (tipo, status)
+                VALUES 
+                ('Reposição de estoque', 'Aberta')
+            ";
+
+            if (mysqli_query($mysqli, $sql)) {
+
+                // Guarda o ID da cotação criada
+                $id_cotacao = mysqli_insert_id($mysqli);
+
+                $_SESSION['mensagem'] = "Solicitação de encomenda criada com sucesso!";
+
+                header("Location: ../paginas/estoque.php");
+                exit;
+
+            } else {
+                die("Erro ao criar cotação: " . mysqli_error($mysqli));
+            }
+
+        } else {
+            $_SESSION['mensagem'] = "Produto não encontrado.";
+            header("Location: ../paginas/estoque.php");
+            exit;
+        }
     }
 ?>

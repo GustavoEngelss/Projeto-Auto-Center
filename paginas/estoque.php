@@ -28,6 +28,21 @@
 
         <div class="container mt-4">
 
+            <!--Mensagem-->
+            <?php if(isset($_SESSION['mensagem'])): ?>
+
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <?= $_SESSION['mensagem']; ?>
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <?php unset($_SESSION['mensagem']); ?>
+
+            <?php endif; ?>
+
             <div class="card">
 
                 <!--Abas da pagina-->
@@ -106,9 +121,11 @@
                                                     <td><?= $produto['qntd'] ?></td>
                                                     <td>
 
-                                                        <button class="btn btn-primary btn-sm">
-                                                            Abrir Cotação
-                                                        </button>
+                                                        <form action="../controller/acao.php" method="post">
+                                                            <button class="btn btn-primary btn-sm" name="abrir_encomenda" value="<?= $produto['id'] ?>">
+                                                                Encomendar Pneu
+                                                            </button>
+                                                        </form>
 
                                                     </td>
                                                 </tr>
@@ -134,8 +151,72 @@
                         <!--Aba encomenda-->
                         <div class="tab-pane fade show" id="encomenda">
 
+                            <h4>Encomendas</h4>
 
-                            <h1>Encomenda</h1>
+                            <table class="table table-hover text-center">
+
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>N° Cotação</th>
+                                        <th>Tipo</th>
+                                        <th>Status</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+
+                                <!--Consulta da tabela-->
+                                <?php 
+
+                                    $sql=
+                                    "
+                                        SELECT
+                                        id_cotacao as id,
+                                        data_abertura as data,
+                                        tipo,
+                                        status
+                                        FROM cotacoes
+
+                                        ORDER BY id DESC
+                                    ";
+                                    $resultado = $mysqli->query($sql)
+
+                                ?>
+
+                                <tbody>
+                                    <?php while($encomenda = $resultado->fetch_assoc()): ?>
+
+                                        <tr>
+
+                                            <td>
+                                                <a href="#">
+                                                    <?= (int) $encomenda['id'] ?>
+                                                </a>
+                                            </td>
+
+                                            <td>
+
+                                                <?= $encomenda['tipo'] ?>
+
+                                            </td>
+
+                                            <td>
+
+                                                <?= $encomenda['status'] ?>
+
+                                            </td>
+
+                                            <td>
+
+                                                <?= date('d/m/Y', strtotime ($encomenda['data'])) ?>
+
+                                            </td>
+
+                                        </tr>
+                                    <?php endwhile; ?>
+                                    
+                                </tbody>
+
+                            </table>
 
                         </div>
 

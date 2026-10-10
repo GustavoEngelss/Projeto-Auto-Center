@@ -107,17 +107,14 @@
 
                             <tr>
 
-                                <!-- Nº O.S -->
                                 <td>
                                     <a href="../modelo/abrir-os.php?id=<?= (int) $os['id'] ?>" class="text-decoration-none"><?= $os['id'] ?></a>
                                 </td>
 
-                                <!-- Cliente -->
                                 <td>
                                     <?= htmlspecialchars($os['cliente']) ?>
                                 </td>
 
-                                <!-- Carro -->
                                 <td>
                                     <?php if($os['marca'] && $os['modelo']): ?>
 
@@ -130,27 +127,22 @@
                                     <?php endif; ?>
                                 </td>
 
-                                <!-- Placa -->
                                 <td>
                                     <?= htmlspecialchars($os['placa']) ?>
                                 </td>
 
-                                <!-- Vendedor -->
                                 <td>
                                     <?= htmlspecialchars($os['vendedor']) ?>
                                 </td>
 
-                                <!-- Valor -->
                                 <td>
                                     R$ <?= number_format($os['total'], 2, ',', '.') ?>
                                 </td>
 
-                                <!-- Status -->
                                 <td>
                                     <?= htmlspecialchars($os['status']) ?>
                                 </td>
 
-                                <!-- Data -->
                                 <td>
                                     <?= date('d/m/Y', strtotime($os['criado_em'])) ?>
                                 </td>

@@ -596,8 +596,6 @@
     }
     
     //API 13 Abrir cotação
-    
- // API 13 - Abrir cotação
     if (isset($_POST['abrir_encomenda'])) {
 
         // Pega os produtos selecionados
@@ -663,4 +661,6 @@
             die("Erro ao criar cotação: " . $mysqli->error);
         }
     };
+
+    //
 ?>

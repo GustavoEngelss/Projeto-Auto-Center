@@ -187,7 +187,7 @@
                                         <tr>
 
                                             <td>
-                                                <a href="#">
+                                                <a href="../modelo/encomenda.php?id=<?= (int) $encomenda['id'] ?>">
                                                     <?= (int) $encomenda['id'] ?>
                                                 </a>
                                             </td>

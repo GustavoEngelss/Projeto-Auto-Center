@@ -94,152 +94,146 @@
 
             <?php endif; ?>
 
-            
-            <div class="card mb-4">
+            <form action="../controller/acao.php" method="POST">
 
-                <div class="card-header">
-                    <h4 class="mb-0">
-                        Encomenda nº <?= (int) $encomenda['id_cotacao'] ?>
-                    </h4>
-                </div>
+                <input type="hidden" name="id_cotacao"
+                    value="<?= (int) $encomenda['id_cotacao'] ?>"
+                >
 
-                <div class="card-body">
+                <div class="card mb-4">
 
-                    <div class="row mb-4">
-
-                        <div class="col-md-3">
-                            <strong>Data:</strong><br>
-                            <?= date('d/m/Y H:i', strtotime($encomenda['data_abertura'])) ?>
-                        </div>
-
-                        <div class="col-md-3">
-                            <strong>Tipo:</strong><br>
-                            <?= htmlspecialchars($encomenda['tipo']) ?>
-                        </div>
-
-                        <div class="col-md-3">
-                            <strong>Status:</strong><br>
-                            <span class="badge badge-info">
-                                <?= htmlspecialchars($encomenda['status']) ?>
-                            </span>
-                        </div>
-
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            Encomenda nº <?= (int) $encomenda['id_cotacao'] ?>
+                        </h4>
                     </div>
 
-                    <h5>Produtos da encomenda</h5>
+                    <div class="card-body">
 
-                    <div class="table-responsive">
+                        <div class="row mb-4">
 
-                        <table class="table table-hover text-center">
+                            <div class="col-md-3">
+                                <strong>Data:</strong><br>
+                                <?= date('d/m/Y H:i', strtotime($encomenda['data_abertura'])) ?>
+                            </div>
 
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Produto</th>
-                                    <th>Quantidade</th>
-                                    <th>Custo unitário</th>
-                                    <th>Margem (%)</th>
-                                    <th>Venda unitária</th>
-                                </tr>
-                            </thead>
+                            <div class="col-md-3">
+                                <strong>Tipo:</strong><br>
+                                <?= htmlspecialchars($encomenda['tipo']) ?>
+                            </div>
 
-                            <tbody>
+                            <div class="col-md-3">
+                                <strong>Status:</strong><br>
+                                <span class="badge badge-info">
+                                    <?= htmlspecialchars($encomenda['status']) ?>
+                                </span>
+                            </div>
 
-                                <?php if ($itens->num_rows > 0): ?>
+                        </div>
 
-                                    <?php while ($item = $itens->fetch_assoc()): ?>
+                        <h5>Produtos da encomenda</h5>
+                        <div class="table-responsive">
 
-                                        <tr>
-                                            <!--codigo-->
-                                            <td><?= (int) $item['id'] ?></td>
-
-                                            <!--nome-->
-                                            <td>
-                                                <?= htmlspecialchars($item['nome']) ?>
-                                            </td>
-
-                                            <!--quantidade-->
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    name="quantidade[<?= $item['id'] ?>]"
-                                                    value="<?= (int) $item['quantidade'] ?>"
-                                                    min="1"
-                                                    class="form-control form-control-sm quantidade-item text-center"
-                                                    style="width: 80px; margin: auto;"
-                                                >
-                                            </td>
-
-                                            <!-- Custo unitário -->
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    inputmode="decimal"
-                                                    name="custo[<?= $item['id'] ?>]"
-                                                    value="<?= number_format((float)$item['custo_unitario'], 2, '.', '') ?>"
-                                                    class="form-control form-control-sm custo-unitario text-center"
-                                                    style="width: 100px; margin: auto;"
-                                                >
-                                            </td>
-
-                                            <!-- Margem percentual -->
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    name="margem[<?= $item['id'] ?>]"
-                                                    value="<?= number_format((float)$item['margem_percentual'], 2, '.', '') ?>"
-                                                    min="0"
-                                                    step="0.01"
-                                                    class="form-control form-control-sm margem-percentual text-center"
-                                                    style="width: 85px; margin: auto;"
-                                                >
-                                            </td>
-
-                                            <!-- Venda unitária -->
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    value="<?= number_format((float)$item['venda_unitaria'], 2, '.', '') ?>"
-                                                    class="form-control form-control-sm venda-unitaria text-center"
-                                                    style="width: 100px; margin: auto;"
-                                                    readonly
-                                                >
-                                            </td>
-                                        </tr>
-
-                                    <?php endwhile; ?>
-
-                                <?php else: ?>
+                            <table class="table table-hover text-center">
+                                <thead class="thead-light">
 
                                     <tr>
-                                        <td colspan="6">
-                                            <p>Nenhum produto encontrado nesta encomenda.</p>
-                                        </td>
+                                        <th>Código</th>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Custo unitário</th>
+                                        <th>Margem (%)</th>
+                                        <th>Venda unitária</th>
                                     </tr>
 
-                                <?php endif; ?>
+                                </thead>
 
-                            </tbody>
+                                <tbody>
+                                    <?php if ($itens->num_rows > 0): ?>
+                                        <?php while ($item = $itens->fetch_assoc()): ?>
+                                            <tr>
 
-                        </table>
+                                                <!--codigo-->
+                                                <td>
+                                                    <input
+                                                        type="hidden"
+                                                        name="produto_id[<?= $item['id'] ?>]"
+                                                        value="<?= (int) $item['id'] ?>"
+                                                    >
+                                                </td>
+                                                <!--nome-->
+                                                <td>
+                                                    <?= htmlspecialchars($item['nome']) ?>
+                                                </td>
+                                                <!--quantidade-->
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        name="quantidade[<?= $item['id'] ?>]"
+                                                        value="<?= (int) $item['quantidade'] ?>"
+                                                        min="1"
+                                                        class="form-control form-control-sm quantidade-item text-center"
+                                                        style="width: 80px; margin: auto;"
+                                                    >
+                                                </td>
+                                                <!-- Custo unitário -->
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        inputmode="decimal"
+                                                        name="custo[<?= $item['id'] ?>]"
+                                                        value="<?= number_format((float)$item['custo_unitario'], 2, '.', '') ?>"
+                                                        class="form-control form-control-sm custo-unitario text-center"
+                                                        style="width: 100px; margin: auto;"
+                                                    >
+                                                </td>
+                                                <!-- Margem percentual -->
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        name="margem[<?= $item['id'] ?>]"
+                                                        value="<?= number_format((float)$item['margem_percentual'], 2, '.', '') ?>"
+                                                        min="0"
+                                                        step="0.01"
+                                                        class="form-control form-control-sm margem-percentual text-center"
+                                                        style="width: 85px; margin: auto;"
+                                                    >
+                                                </td>
+                                                <!-- Venda unitária -->
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="valor_fim[<?= $item['id'] ?>]"
+                                                        value="<?= number_format((float)$item['venda_unitaria'], 2, '.', '') ?>"
+                                                        class="form-control form-control-sm venda-unitaria text-center"
+                                                        style="width: 100px; margin: auto;"
+                                                        readonly
+                                                    >
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6">
+                                                <p>Nenhum produto encontrado nesta encomenda.</p>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
 
+                        <a href="../paginas/estoque.php#encomenda" class="btn btn-secondary mr-2 px-3">
+                            Voltar
+                        </a>
+
+                        <button type="submit" class="btn btn-success mr-2 px-3" name="encomenda">
+                            Efetivar Encomenda
+                        </button>
                     </div>
-
-                    <a href="../paginas/estoque.php#encomenda" class="btn btn-secondary mr-2 px-3">
-                        Voltar
-                    </a>
-
-                    <button class="btn btn-success mr-2 px-3" name="encomenda">
-                        Efetivar Encomenda
-                    </button>
-
                 </div>
-
-            </div>
-
+            </form>
         </div>
-
-
     </section>
 
     <script src="../assets/js/script.js"></script>

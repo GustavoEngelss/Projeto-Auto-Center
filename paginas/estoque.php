@@ -174,6 +174,7 @@
                                         tipo,
                                         status
                                         FROM cotacoes
+                                        WHERE status = 'Aberta'
 
                                         ORDER BY id DESC
                                     ";

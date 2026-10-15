@@ -596,7 +596,7 @@
     }
     
     //API 13 Abrir cotação
-    if (isset($_POST['abrir_encomenda'])) {
+    if(isset($_POST['abrir_encomenda'])){
 
         // Pega os produtos selecionados
         $produtos = $_POST['produtos'] ?? [];
@@ -662,5 +662,96 @@
         }
     };
 
-    //
+    // API 14 - Efetivar Encomenda
+    if (isset($_POST['encomenda'])) {
+
+        //dados do formulario
+        $id_cotacao = filter_input(INPUT_POST, 'id_cotacao', FILTER_VALIDATE_INT);
+        $produtos = $_POST['produto_id'] ?? [];
+        $quantidades = $_POST['quantidade'] ?? [];
+        $valores = $_POST['valor_fim'] ?? [];
+
+        if ($id_cotacao > 0 && !empty($produtos)) {
+
+            $erro = false;
+
+            foreach ($produtos as $id => $produto_id) {
+
+                $produto_id = filter_var($produto_id, FILTER_VALIDATE_INT);
+                $qntd = filter_var($quantidades[$id] ?? null, FILTER_VALIDATE_INT);
+                $valor = str_replace(',', '.', trim($valores[$id] ?? ''));
+
+                // Valida os dados
+                if (!$produto_id || $produto_id <= 0 || !$qntd || $qntd <= 0 || !is_numeric($valor) || $valor <= 0) {
+                    $erro = true;
+                    break;
+                }
+
+                $valor = (float) $valor;
+
+                // Verifica se o produto existe
+                $sql = "
+                    SELECT id
+                    FROM produtos
+                    WHERE id = $produto_id
+                ";
+
+                $resultado = mysqli_query($mysqli, $sql);
+
+                if (!$resultado || !mysqli_fetch_assoc($resultado)) {
+                    $erro = true;
+                    break;
+                }
+            }
+
+            if (!$erro) {
+
+                // Atualiza cada produto do estoque
+                foreach ($produtos as $id => $produto_id) {
+
+                    $produto_id = (int) $produto_id;
+                    $qntd = (int) $quantidades[$id];
+                    $valor = (float) str_replace(',', '.', $valores[$id]);
+
+                    $sql = "
+                        UPDATE produtos
+                        SET qntd = qntd + $qntd,
+                            valor = $valor
+                        WHERE id = $produto_id
+                    ";
+
+                    if (!mysqli_query($mysqli, $sql)) {
+                        $erro = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$erro) {
+
+                // Marca a encomenda como efetivada
+                $sql = "
+                    UPDATE cotacoes
+                    SET status = 'Encerrada'
+                    WHERE id_cotacao = $id_cotacao
+                ";
+
+                if (mysqli_query($mysqli, $sql)) {
+                    $_SESSION['mensagem'] = "Encomenda efetivada e estoque atualizado!";
+                } else {
+                    $_SESSION['mensagem'] = "Erro ao atualizar o status da encomenda.";
+                }
+
+            } else {
+                $_SESSION['mensagem'] = "Erro: confira os produtos, as quantidades e os valores.";
+            }
+
+        } else {
+            $_SESSION['mensagem'] = "Encomenda inválida ou sem produtos.";
+        }
+
+        header("Location: ../paginas/estoque.php");
+        exit;        
+    };
+
 ?>

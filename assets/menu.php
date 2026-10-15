@@ -17,48 +17,56 @@
                     <i class="bi bi-arrows" id="btn-expandir"></i>
                 </div>
                 <ul>
+
                     <li class="item-menu">
                         <a href="../paginas/ordem-servico.php" class="button-menu" >
                             <span class="icon"><i class="bi bi-list-check"></i></span>
                             <span class="txt-link">O.S</span>
                         </a>
                     </li>
+
                     <li class="item-menu">
                         <a href="../paginas/orcamento.php?novo=1" class="button-menu" >
                             <span class="icon"><i class="bi bi-search"></i></span>
                             <span class="txt-link">Orçamento</span>
                         </a>
                     </li>
+
                     <li class="item-menu">
                         <a href="../paginas/cliente.php?novo=1" class="button-menu" >
                             <span class="icon"><i class="bi bi-person"></i></span>
                             <span class="txt-link">Cliente</span>
                         </a>
                     </li>
+
                     <li class="item-menu">
                         <a href="../paginas/estoque.php" class="button-menu" >
                             <span class="icon"><i class="bi bi-cart-dash"></i></i></span>
                             <span class="txt-link">Compras</span>
                         </a>
                     </li>
+                    
                     <li class="item-menu">
                         <a href="../paginas/usuarios.php" class="button-menu" >
                             <span class="icon"><i class="bi bi-file-earmark-person"></i></span>
                             <span class="txt-link">Funcinário</span>
                         </a>
                     </li>
+
                     <li class="item-menu">
                         <a href="../paginas/relatorio.php" class="button-menu" >
                             <span class="icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
                             <span class="txt-link">Relatório</span>   
                         </a>
                     </li>
+
                     <li class="item-menu">
                         <a href="../logout.php" class="button-menu" >
                             <span class="icon"><i class="bi bi-arrow-return-left"></i></span>
                             <span class="txt-link">Sair</span>
                         </a>
                     </li>
+
                 </ul>
             </form>
         </nav>

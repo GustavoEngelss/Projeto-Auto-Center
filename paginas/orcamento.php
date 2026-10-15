@@ -13,6 +13,9 @@
     require_once "../assets/menu.php";
     require_once "../conexao.php";
     require_once "../protec.php";
+    require_once "../permissao.php";
+
+    exigirAcesso(['admin', 'vendedor']);
 
     //variveis com nome menores para facilitar
     $orc            = $_SESSION['orcamento'] ?? [];
@@ -231,11 +234,11 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="mb-1">Produto não encontrado?</h4>
-                            <p class="mb-0">Faz a solicitação na pagina do compras!</p>
+                            <p class="mb-0">Faça a solicitação do produto para o compras!</p>
                         </div>
                         
-                        <button name="busca_produto" type="submit" class="btn btn-primary">
-                            Buscar
+                        <button name="cotacao" type="submit" class="btn btn-primary">
+                            abrir solicitação
                         </button>
                         
                     </div>

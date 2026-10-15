@@ -15,6 +15,9 @@
     require_once "../assets/menu.php";
     require_once "../conexao.php";
     require_once "../protec.php";
+    require_once "../permissao.php";
+
+    exigirAcesso(['admin', 'vendedor']);
 
     //variaveis com nome menores para facilitar
     $pesquisa_cliente     = $_SESSION['pesquisa_cliente'] ?? [];

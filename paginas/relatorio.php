@@ -1,6 +1,9 @@
 <?php 
     require_once "../assets/menu.php";
     require_once "../protec.php";
+    require_once "../permissao.php";
+
+    exigirAcesso(['admin']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

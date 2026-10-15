@@ -38,7 +38,8 @@
 
                     $_SESSION['id'] = $dados_usuario['id_usuario'];
                     $_SESSION['nome'] = $dados_usuario['nome'];
-
+                    $_SESSION['nivel_acesso'] = $dados_usuario['nivel_acesso'];
+                    
                     header('Location: paginas/ordem-servico.php');
                     exit;
 

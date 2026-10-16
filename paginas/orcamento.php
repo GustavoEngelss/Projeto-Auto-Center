@@ -241,13 +241,13 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="mb-1">Produto não encontrado?</h4>
-                            <p class="mb-0">Faça a solicitação do produto para o compras!</p>
+                            <p class="mb-0">Faça a cotação na pagina do compras!</p>
                         </div>
-                        
-                        <button name="cotacao" type="submit" class="btn btn-primary">
-                            abrir solicitação
-                        </button>
-                        
+
+                        <a href="../paginas/estoque.php" class="btn btn-primary">
+                            Ir para pagina Cotação
+                        </a>
+                                        
                     </div>
                 </div>
             </div>

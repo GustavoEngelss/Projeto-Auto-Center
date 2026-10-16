@@ -146,7 +146,43 @@ exigirAcesso(['admin', 'compras']);
                         <!--Aba cotação-->
                         <div class="tab-pane fade show" id="cotacao">
 
-                            <h1>Cotação</h1>
+                            <h4>Solicitação de Cotações dos Vendedores</h4>
+
+                            <form action="../controller/acao.php" method="post">
+                                <table class="table table-hover text-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>N° Cotação</th>
+                                            <th>Tipo</th>
+                                            <th>Status</th>
+                                            <th>Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        
+                                            <tfood>
+                                                <tr>
+                                                    <td colspan="5" class="text-right">
+                                
+                                                        <button class="btn btn-primary btn-sm" name="">
+                                                            Abrir Cotação
+                                                        </button>
+                                
+                                                    </td>
+                                                </tr>
+                                            </tfood>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
 
                         </div>
 
@@ -159,7 +195,7 @@ exigirAcesso(['admin', 'compras']);
 
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>N° Cotação</th>
+                                        <th>N° Encomenda</th>
                                         <th>Tipo</th>
                                         <th>Status</th>
                                         <th>Data</th>

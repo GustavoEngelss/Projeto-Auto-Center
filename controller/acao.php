@@ -46,15 +46,20 @@
         $senha      = trim($_POST['senha']);
         $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
         $fone       = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
+        $acesso     = mysqli_real_escape_string($mysqli, trim($_POST['acesso']));
 
         //validação campo vazio
-        if(empty($nome) || empty($usuario) || empty($senha) || empty($fone)){
+        if(empty($nome) || empty($usuario) || empty($senha) || empty($fone) || empty($acesso)){
             $_SESSION['mensagem'] = 'Preencha todos os campos!';
             header('Location: ../paginas/usuarios.php');
             exit;
         }
 
-        $sql = "INSERT INTO usuarios (nome, usuario, senha, numero, status) VALUES ('$nome', '$usuario', '$senha_hash', '$fone', 'Ativo')";
+        $sql = 
+        "
+            INSERT INTO usuarios (nome, usuario, senha, numero, status, nivel_acesso) 
+            VALUES ('$nome', '$usuario', '$senha_hash', '$fone', 'Ativo', '$acesso')
+        ";
 
         mysqli_query($mysqli, $sql);
 
@@ -78,16 +83,29 @@
         $nome       = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
         $usuario    = mysqli_real_escape_string($mysqli, trim($_POST['usuario']));
         $fone       = mysqli_real_escape_string($mysqli, trim($_POST['numero']));
+        $acesso     = mysqli_real_escape_string($mysqli, trim($_POST['acesso']));
+
 
 
         //validação campo vazio
-        if(empty($nome) || empty($usuario) || empty($fone)){
+        if(empty($nome) || empty($usuario) || empty($fone) || empty($acesso)){
             $_SESSION['mensagem'] = 'Preencha todos os campos!';
             header('Location: ../paginas/usuarios.php');
             exit;
         }
         
-        $sql = "UPDATE usuarios SET nome='$nome', usuario='$usuario', numero='$fone' WHERE id_usuario='$usuario_id'";
+        $sql = 
+        "
+            UPDATE usuarios 
+            SET 
+                nome         = '$nome', 
+                usuario      = '$usuario', 
+                numero       = '$fone',
+                nivel_acesso = '$acesso'
+
+            WHERE id_usuario = '$usuario_id'
+        ";
+
         mysqli_query($mysqli, $sql);
 
         //validação se deu certo volta automatico para a tela de usuarios e mensagem de sucesso ou de erro 

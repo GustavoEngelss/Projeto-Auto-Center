@@ -68,6 +68,19 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label>Acesso</label>
+
+                                    <select name="acesso" class="custom-select">
+
+                                        <option value="">Selecione</option>
+                                        <option value="admin">Adiministrador</option>
+                                        <option value="vendedor">Vendedor</option>
+                                        <option value="compras">Compras</option>                                       
+
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
                                     <button type="submit" name="update_usuario" class="btn btn-primary">Salvar</button>
                                 </div>
 

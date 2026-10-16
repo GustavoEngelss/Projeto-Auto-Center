@@ -30,7 +30,7 @@
             <h1>Funcionários</h1>
 
             <!--Botão-->
-            <a href="../modelo/add-usuario.php" class="btn btn-primary bnt-usuario">
+            <a href="../modelo/add-usuario.php" class="btn btn-primary">
                 <i class="bi bi-plus-lg"></i> Novo Funcioário
             </a>
 
@@ -96,6 +96,7 @@
                                 <th>Usuário</th>
                                 <th>Telefone</th>
                                 <th>Status</th>
+                                <th>Acesso</th>
                                 <th></th>
                             </tr>
 
@@ -117,6 +118,9 @@
                                     <td class="text-center"><?=$usuarios['numero']?></td>
                                     <td class="text-center">
                                         <span class="badge badge-success"><?=$usuarios['status']?></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-primary"><?=$usuarios['nivel_acesso']?></span>
                                     </td>
                                     <td class="text-center">
 

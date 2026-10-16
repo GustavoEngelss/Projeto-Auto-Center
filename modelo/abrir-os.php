@@ -363,8 +363,6 @@
 
                                                     <select name="categoria" id="categoria" class="custom-select">
 
-                                                        <option value="">Selecione</option>
-
                                                         <option value="Pneus"<?= (($busca['categoria'] ?? '') == 'Pneus') ? 'selected' : '' ?>>Pneus</option>
 
                                                         <option value="Peça"<?= (($busca['categoria'] ?? '') == 'Peça') ? 'selected' : '' ?>>Peça</option>

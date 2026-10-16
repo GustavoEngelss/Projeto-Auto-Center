@@ -171,6 +171,13 @@
 
                             </div>
 
+                            <div class="col-md-6 float-right"> 
+
+                                <label for=""></label>
+                                <button type="submit" name="busca_produto" class="btn btn-outline-primary form-control mt-2"></i>Buscar</button>
+
+                            </div>
+
                         </div>
 
                     </div>

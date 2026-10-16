@@ -115,7 +115,7 @@
                                     <td class="text-center"><?=$usuarios['id_usuario']?></td>
                                     <td class="text-center"><?=$usuarios['nome']?></td>
                                     <td class="text-center"><?=$usuarios['usuario']?></td>
-                                    <td class="text-center"><?=$usuarios['numero']?></td>
+                                    <td class="text-center"><?= preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $usuarios['numero']) ?></td>
                                     <td class="text-center">
                                         <span class="badge badge-success"><?=$usuarios['status']?></span>
                                     </td>

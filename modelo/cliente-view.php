@@ -54,12 +54,12 @@
 
                             <div class="col-md-4">
                                 <label>CPF*</label>
-                                <p class="form-control"><?= $cliente['cpf'] ?></p>
+                                <p class="form-control"><?= preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cliente['cpf']) ?></p>
                             </div>
 
                             <div class="col-md-4">
                                 <label>Telefone*</label>
-                                <p class="form-control"><?= $cliente['telefone'] ?></p>
+                                <p class="form-control"><?= preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $cliente['telefone']) ?></p>
                                 <br>
                             </div>
                             
@@ -70,7 +70,7 @@
 
                             <div class="col-md-4">
                                 <label>Data de nascimento*</label>
-                                <p class="form-control"><?= $cliente['data_nascimento'] ?></p>
+                                <p class="form-control"><?= date('d/m/Y', strtotime($cliente['data_nascimento'])) ?></p>
                             </div>
 
                             <div class="col-md-4">

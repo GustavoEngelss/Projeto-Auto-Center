@@ -176,6 +176,58 @@
         }
     }
 
+    //Editando Dados do cliente 
+    if(isset($_POST['update_cliente'])){
+        $cliente_id = mysqli_real_escape_string($mysqli, $_POST['cliente_id']);
+
+        $telefone = mysqli_real_escape_string($mysqli, trim($_POST['fone']));
+        $email = mysqli_real_escape_string($mysqli, trim($_POST['email']));
+        $cep = mysqli_real_escape_string($mysqli, trim($_POST['cep']));
+        $rua = mysqli_real_escape_string($mysqli, trim($_POST['rua']));
+        $num = mysqli_real_escape_string($mysqli, trim($_POST['num']));
+        $bairro = mysqli_real_escape_string($mysqli, trim($_POST['bairro']));
+        $cidade = mysqli_real_escape_string($mysqli, trim($_POST['cidade']));
+        $estado= mysqli_real_escape_string($mysqli, trim($_POST['estado']));
+        $obs = mysqli_real_escape_string($mysqli, trim($_POST['obs']));
+
+        if(empty($telefone) || empty($cep) || empty($rua) || empty($num) || empty($bairro) || empty($cidade) || empty($estado)){
+            $_SESSION['mensagem'] = 'Preencha todos os campos obrigatorios (*)!';
+            header('Location: ../modelo/edit-cliente.php');
+            exit;
+        }
+
+        $sql =
+        "
+            UPDATE clientes
+            SET
+                telefone        = '$telefone',
+                email           = '$email',
+                cep             = '$cep',
+                rua             = '$rua',
+                numero          = '$num',
+                bairro          = '$bairro',
+                cidade          = '$cidade',
+                estado          = '$estado',
+                observacao      = '$obs'
+
+            WHERE id = '$cliente_id'
+        ";
+
+        mysqli_query($mysqli, $sql);
+
+        //validação se deu certo volta automatico para a tela de cliente e mensagem de sucesso ou de erro 
+        if(mysqli_affected_rows($mysqli) > 0){
+            $_SESSION['mensagem'] = 'Dados do cliente atualizado com sucesso';
+            header('Location: ../paginas/cliente.php');
+            exit;
+        }else{
+            $_SESSION['mensagem'] = 'Erro ao atualizar dados do cliente';
+            header('Location: ../paginas/cliente.php');
+            exit;
+        }
+
+    }
+
     //API 05 Pesquisa produto
     if(isset($_POST['busca_produto'])){
 

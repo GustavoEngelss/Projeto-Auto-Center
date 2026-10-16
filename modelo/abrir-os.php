@@ -235,7 +235,7 @@
                                                         <div class="col-sm-10">
 
                                                             <p class="form-control border-0">
-                                                                <?= $cliente['telefone'] ?>
+                                                                <?= preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $cliente['telefone']) ?>
                                                             </p>
 
                                                         </div>

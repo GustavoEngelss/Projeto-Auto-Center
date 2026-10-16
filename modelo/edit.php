@@ -64,7 +64,7 @@
 
                                 <div class="mb-3">
                                     <label>Telefone</label>
-                                    <input type="text" name="numero" class="form-control" value="<?= $usuario['numero'] ?>">
+                                    <input type="text" name="numero" class="form-control" value="<?= preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $usuario['numero']) ?>">
                                 </div>
 
                                 <div class="mb-3">

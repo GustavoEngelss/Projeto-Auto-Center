@@ -112,10 +112,16 @@
                                     <tr>
                                         <td><?= $cliente['id']?></td>
                                         <td><?= $cliente['nome']?></td>
-                                        <td><?= $cliente['cpf']?></td>
-                                        <td><?= $cliente['telefone']?></td>
+                                        <td><?= preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cliente['cpf'])?></td>
+                                        <td><?= preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $cliente['telefone'])?></td>
                                         <td>
-                                        <a href="../modelo/cliente-view.php?id=<?= $cliente['id'] ?>" class="btn btn-secondary btn-sm">Visualizar</a>
+                                            <a href="../modelo/cliente-view.php?id=<?= $cliente['id'] ?>" class="btn btn-secondary btn-sm">
+                                                Visualizar
+                                            </a>
+
+                                            <a href="../modelo/edit-cliente.php?id=<?= $cliente['id'] ?>" class="btn btn-success btn-sm">
+                                                Editar
+                                            </a>
 
                                         </td>
                                     </tr>

@@ -740,6 +740,7 @@
         $produtos = $_POST['produto_id'] ?? [];
         $quantidades = $_POST['quantidade'] ?? [];
         $valores = $_POST['valor_fim'] ?? [];
+        $custos = $_POST['custo'] ?? [];
 
         if ($id_cotacao > 0 && !empty($produtos)) {
 
@@ -750,9 +751,11 @@
                 $produto_id = filter_var($produto_id, FILTER_VALIDATE_INT);
                 $qntd = filter_var($quantidades[$id] ?? null, FILTER_VALIDATE_INT);
                 $valor = str_replace(',', '.', trim($valores[$id] ?? ''));
+                $custo = str_replace(',', '.', trim($custos[$id] ?? ''));
+
 
                 // Valida os dados
-                if (!$produto_id || $produto_id <= 0 || !$qntd || $qntd <= 0 || !is_numeric($valor) || $valor <= 0) {
+                if (!$produto_id || $produto_id <= 0 || !$qntd || $qntd <= 0 || !is_numeric($valor) || $valor <= 0 || !is_numeric($custo) || $custo < 0) {
                     $erro = true;
                     break;
                 }
@@ -782,11 +785,13 @@
                     $produto_id = (int) $produto_id;
                     $qntd = (int) $quantidades[$id];
                     $valor = (float) str_replace(',', '.', $valores[$id]);
+                    $custo = (float) str_replace(',','.', $custos[$id]);
 
                     $sql = "
                         UPDATE produtos
                         SET qntd = qntd + $qntd,
-                            valor = $valor
+                            valor = $valor,
+                            custo = $custo
                         WHERE id = $produto_id
                     ";
 
@@ -827,8 +832,6 @@
     //API 16 fazer cotação
     if(isset($_POST['cotacao'])){
         
-
-
     }
 
 ?>

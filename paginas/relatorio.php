@@ -1,7 +1,11 @@
 <?php 
+    //data e hora do brasil
+    date_default_timezone_set('America/Sao_Paulo');
+
     require_once "../assets/menu.php";
     require_once "../protec.php";
     require_once "../permissao.php";
+    require_once "../conexao.php";
 
     exigirAcesso(['admin']);
 ?>
@@ -28,119 +32,130 @@
     <section class="conteudo">
 
         <header class="cabecalho-relatorio">
-            <h1>Relatório</h1>
+            <div>
+                <h1>Relatório</h1>
+            </div>
         </header>
+        
+        <div class="container mt-4">
+        
+            <form method="post" action="">
 
-        <div class="box-info">
-            <div style="background:linear-gradient(45deg, #FF5370, #ff869a)" class="box-info-single">
-                <div class="info-text">
-                    <h3>Lucro Bruto</h3>
-                    <h5>$40.000</h5>
-                </div>
-                <i class="bi bi-cash"></i>
-            </div>
+                <div class="card">
 
-            <div style="background:linear-gradient(45deg, #2ed8b6, #59e0c5)" class="box-info-single">
-                <div class="info-text">
-                    <h3>Lucro Líquido</h3>
-                    <h5>$25.000</h5>
-                </div>
-                <i class="bi bi-cash"></i>
-            </div>
+                    <h5>Filtros</h5>
 
-            <div style="background:linear-gradient(45deg, #4099ff, #73b4ff)" class="box-info-single">
-                <div class="info-text">
-                    <h3>Total de Pneus Vendidos </h3>
-                    <h5>325</h5>
-                </div>
-                <i class="bi bi-car-front"></i>
-            </div>
-        </div>
+                    <div class="card-body">
 
-        <div class="graficos">
+                        <div class="form-row">
 
-            <div class="grafico-quadrado">
-                <canvas id="meuGrafico"></canvas>
-            </div>
+                            <div class="form-group col-md-4">
+                                <label>Data Inicial</label>
+                                <input type="date" id="data_incio" name="data_incio" class="form-control" value="<?= date('Y-m-01') ?>">
+                            </div>
 
-            <div class="card-graficoR">
-                <div class="topo">
-                    <h4>Meta da Loja</h4>
-                    <i class="bi bi-bar-chart-line-fill"></i>
-                    <div class="porcentagem">
-                        <span>78%</span>
+                            <div class="form-group col-md-4">
+                                <label>Data Final</label>
+                                <input type="date" id="data_fim" name="data_fim" class="form-control" value="<?= date('Y-m-d') ?>">
+                            </div>
+
+                            <!--Vendedores-->
+                            <div class="form-group col-md-4">
+                                <label>Vendedor</label>
+                                <select name="vendedor" id="vendedor" class="form-control">
+                                    <option value="">Todos</option>
+
+                                    <?php 
+                                        //pega os usuarios salvos como vendedor
+                                        $sql = 
+                                            "
+                                                SELECT id_usuario, nome
+                                                FROM usuarios
+                                                WHERE nivel_acesso = 'vendedor'
+                                                ORDER BY nome ASC
+                                            ";
+
+                                            $resultado = mysqli_query($mysqli, $sql);
+
+                                            if (!$resultado) {
+                                                die("Erro ao buscar vendedores: " . mysqli_error($mysqli));
+                                            }
+
+                                            while ($vendedor = mysqli_fetch_assoc($resultado)) {
+                                        ?>
+                                            <option value="<?= $vendedor['id_usuario'] ?>">
+                                                <?= htmlspecialchars($vendedor['nome']) ?>
+                                            </option>
+                                    <?php
+                                        }
+                                    ?>
+
+                                
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="text-right">
+                            <button type="submit" name="relatorio" class="btn btn-primary">Gerar relatório</button>
+                        </div>
+                        
+                        <!--Abas-->
+                        <div class="card-header">
+                            
+                            <ul class="nav nav-tabs card-header-tabs">
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link active" data-toggle="tab" href="#vendedor">
+                                        Relatório Vendedores
+                                    </a>
+
+                                </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link" data-toggle="tab" href="#grafico">
+                                        Gráficos 
+                                    </a>
+
+                                </li>
+
+                            </ul>  
+                        </div>
+
+                        <!--opções de abas-->
+                        <div class="card-body">
+
+                            <div class="tab-content">
+                                <!--desempenho vendedores-->
+                                <div class="tab-pane fade show active" id="vendedor">
+
+                                    <h1>vendedor</h1>
+                                
+                                </div>
+
+                                <!--Graficos-->
+                                <div class="tab-pane fade show" id="grafico">
+
+                                    <h1>grafico</h1>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        
                     </div>
-                </div>
-                <div class="desempenho">
-                    <h2>Desempenho Mensal</h2>
-                    <p>
-                        Sua loja já atingiu 78% da meta mensal
-                        de faturamento em serviços e vendas.
-                    </p>
-                    <a href="#" class="bnt-desempenho">
-                        <i class="bi bi-graph-up"></i>
-                        Ver Gráfico Pessoal
-                    </a>
+
                 </div>
 
-            </div>
+            </form>
+        
         </div>
             
     </section>
         
-    <script>
-        const ctx = document.getElementById("meuGrafico");
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: [
-                    "1","2","3","4","5","6","7","8","9","10",
-                    "11","12","13","14","15","16","17","18","19","20",
-                    "21","22","23","24","25","26","27","28","29","30"
-                ],
-
-                datasets: [
-                    {
-                        label: "Lucro Limpo",
-                        data: [
-                            1000,1500,1200,1800,2000,1700,1400,2300,2100,2600,
-                            1900,2400,1600,2800,2200,2500,1800,2900,3100,2300,
-                            1700,3300,2700,2100,4000,3200,1900,2600,3700,3500
-                        ],
-                        backgroundColor: "blue",
-                        borderRadius: 5
-                    },
-
-                    {
-                        label: "Lucro Bruto",
-                        data: [
-                            2000,2500,2200,2800,3000,2600,2400,3200,3100,3600,
-                            2900,3400,2300,3900,3300,3500,2700,4100,4300,3200,
-                            2600,4500,3700,3000,5000,4200,2800,3600,4800,4600
-                        ],
-                        backgroundColor: "red",
-                        borderRadius: 5
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-
-                scales: {
-                    y: {
-                        beginAtZero: true,
-
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString("pt-BR");
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
     <script src="../assets/js/script.js"></script>
 </body>
 </html>

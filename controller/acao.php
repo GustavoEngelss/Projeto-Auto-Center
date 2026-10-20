@@ -38,7 +38,7 @@
         }
     }
 
-    //API 01 Criando usuario 
+    //API Criando usuario 
     if(isset($_POST['create_usuario'])){
         //pega os dados do forulario e joga para a variavel 
         $nome       = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
@@ -75,7 +75,7 @@
         }
     }
 
-    //API 02 Editando usuario 
+    //API Editando usuario 
     if(isset($_POST['update_usuario'])){
         $usuario_id = mysqli_real_escape_string($mysqli, $_POST['usuario_id']);
 
@@ -121,7 +121,7 @@
 
     }
 
-    //API 03 Deletando o usuario
+    //API Deletando o usuario
     if(isset($_POST['delete_usuario'])){
         $usuario_id = mysqli_real_escape_string($mysqli, $_POST['delete_usuario']);
         $sql = "DELETE from usuarios WHERE id_usuario = '$usuario_id'";
@@ -139,7 +139,7 @@
         }
     }
 
-    //API 04 Adicionando cliente
+    //API Adicionando cliente
     if(isset($_POST['new_cliente'])){
         $nome = mysqli_real_escape_string($mysqli, trim($_POST['nome']));
         $cpf = mysqli_real_escape_string($mysqli, trim($_POST['cpf']));
@@ -176,7 +176,7 @@
         }
     }
 
-    // API 05 Editando Dados do cliente 
+    // API Editando Dados do cliente 
     if(isset($_POST['update_cliente'])){
         $cliente_id = mysqli_real_escape_string($mysqli, $_POST['cliente_id']);
 
@@ -228,7 +228,7 @@
 
     }
 
-    //API 06 Pesquisa produto
+    //API Pesquisa produto
     if(isset($_POST['busca_produto'])){
 
         //vê de qual das paginas que vem para fazer o retorno certo 
@@ -323,7 +323,7 @@
         exit;
     }
 
-    //API 07 Pesquisa cliente
+    //API Pesquisa cliente
     if(isset($_POST['busca_cliente'])){
 
         //origem da requisição
@@ -382,7 +382,7 @@
         }
     }
 
-    //API 08 Selecionando modelo do carro para por O.S
+    //API Selecionando modelo do carro para por O.S
     if (isset($_GET['marca'])) {
 
         $id_marca = mysqli_real_escape_string($mysqli, $_GET['marca']);
@@ -401,7 +401,7 @@
         exit;
     }
 
-    //API 09 Seleciona os itens e retona na O.S
+    //API Seleciona os itens e retona na O.S
     if(isset($_POST['adicionar_itens'])){
 
         $produtos = $_POST['produtos'] ?? [];
@@ -464,7 +464,7 @@
         exit;
     }
 
-    //API 10 Deleta iten da o.s
+    //API Deleta iten da o.s
     if(isset($_POST['remover_item'])){
 
         $id_produto = $_POST['remover_item'];
@@ -487,7 +487,7 @@
         exit;
     }
 
-    //API 11 Atualiza quantidade e valor dos itens da O.S
+    //API Atualiza quantidade e valor dos itens da O.S
     if(isset($_POST['atualizar_itens'])){
 
         // Quantidade e valor já foram salvos no bloco do início do arquivo
@@ -495,7 +495,7 @@
         exit;
     }
 
-    //API 12 Abri e edita O.S
+    //API Abri e edita O.S
     if(isset($_POST['abrir_os'])){
 
         $usuario_id = $_SESSION['id'];
@@ -582,7 +582,7 @@
         exit;
     }
 
-    //API 13 Encerrando a O.S
+    //API Encerrando a O.S
     if(isset($_POST['encerrar_os'])){
 
         $id_os = $_POST['os_id'];
@@ -665,7 +665,7 @@
         exit;
     }
     
-    //API 14 Abrir cotação
+    //API Abrir cotação
     if(isset($_POST['abrir_encomenda'])){
 
         // Pega os produtos selecionados
@@ -732,8 +732,8 @@
         }
     };
 
-    // API 15 Efetivar Encomenda
-    if (isset($_POST['encomenda'])) {
+    // API Efetivar Encomenda
+    if(isset($_POST['encomenda'])) {
 
         //dados do formulario
         $id_cotacao = filter_input(INPUT_POST, 'id_cotacao', FILTER_VALIDATE_INT);
@@ -829,9 +829,29 @@
         exit;        
     };
 
-    //API 16 fazer cotação
-    if(isset($_POST['cotacao'])){
+    //API Apresentar Relatório
+    if(isset($_POST['relatorio'])){
         
+        //salva os dados enviados
+        $data_inicial = mysqli_real_escape_string($mysqli, trim($_POST['data_incio']));
+        $data_final = mysqli_real_escape_string($mysqli, trim($_POST['data_fim']));
+        $vendedor = mysqli_real_escape_string($mysqli, trim($_POST['vendedor']));
+
+
+        //Se selecionar um vendedor expecifico
+        if($vendedor == ""){
+
+
+        }else{
+
+        
+        }
+
+        
+
+
+
     }
+
 
 ?>

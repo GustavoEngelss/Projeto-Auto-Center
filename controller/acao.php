@@ -829,29 +829,169 @@
         exit;        
     };
 
-    //API Apresentar Relatório
-    if(isset($_POST['relatorio'])){
-        
-        //salva os dados enviados
-        $data_inicial = mysqli_real_escape_string($mysqli, trim($_POST['data_incio']));
-        $data_final = mysqli_real_escape_string($mysqli, trim($_POST['data_fim']));
-        $vendedor = mysqli_real_escape_string($mysqli, trim($_POST['vendedor']));
+    // API - Apresentar relatório  
+    if (isset($_POST['relatorio'])) {
 
+        $data_inicial = trim($_POST['data_incio'] ?? '');
+        $data_final   = trim($_POST['data_fim'] ?? '');
+        $vendedor     = trim($_POST['vendedor'] ?? '');
 
-        //Se selecionar um vendedor expecifico
-        if($vendedor == ""){
-
-
-        }else{
-
-        
+        // Validar se as datas foram preenchidas
+        if ($data_inicial === '' || $data_final === '') {
+            $_SESSION['mensagem'] = "Informe a data inicial e a data final.";
+            header("Location: ../paginas/relatorio.php");
+            exit;
         }
 
-        
+        // Validar o formato das datas
+        $inicio = DateTime::createFromFormat('!Y-m-d', $data_inicial);
+        $fim    = DateTime::createFromFormat('!Y-m-d', $data_final);
 
+        if (
+            !$inicio || $inicio->format('Y-m-d') !== $data_inicial ||
+            !$fim || $fim->format('Y-m-d') !== $data_final
+        ) {
+            $_SESSION['mensagem'] = "Informe um período válido.";
+            header("Location: ../paginas/relatorio.php");
+            exit;
+        }
 
+        // Validar a ordem das datas
+        if ($data_inicial > $data_final) {
+            $_SESSION['mensagem'] = "A data inicial não pode ser maior que a final.";
+            header("Location: ../paginas/relatorio.php");
+            exit;
+        }
 
+        // Validar o vendedor selecionado
+        if ($vendedor !== '') {
+            $id_vendedor = filter_var($vendedor, FILTER_VALIDATE_INT);
+
+            if ($id_vendedor === false || $id_vendedor === null || $id_vendedor <= 0) {
+                $_SESSION['mensagem'] = "Vendedor inválido.";
+                header("Location: ../paginas/relatorio.php");
+                exit;
+            }
+        }
+
+        // Consulta geral de desempenho dos vendedores
+        $sql = "
+            SELECT
+                usuarios.id_usuario,
+                usuarios.nome AS vendedor,
+
+                COUNT(DISTINCT ordem_servico.id) AS ordem_servico,
+
+                COALESCE(SUM(itens_calculados.venda_bruta), 0)
+                    AS venda_bruta,
+
+                COALESCE(SUM(itens_calculados.venda_bruta), 0)
+                - COALESCE(SUM(itens_calculados.custo_total), 0)
+                    AS venda_limpa,
+
+                COALESCE(SUM(itens_calculados.pneus), 0)
+                    AS pneus
+
+            FROM usuarios
+
+            LEFT JOIN ordem_servico
+                ON ordem_servico.usuario_id = usuarios.id_usuario
+                AND ordem_servico.status = 'Encerrada'
+                AND ordem_servico.criado_em >= ?
+                AND ordem_servico.criado_em < DATE_ADD(?, INTERVAL 1 DAY)
+
+            LEFT JOIN (
+                SELECT
+                    itens_os.os_id,
+
+                    SUM(
+                        itens_os.quantidade * itens_os.valor_unitario
+                    ) AS venda_bruta,
+
+                    SUM(
+                        itens_os.quantidade * COALESCE(produtos.custo, 0)
+                    ) AS custo_total,
+
+                    SUM(
+                        CASE
+                            WHEN produtos.tipo IN ('Pneu Novo', 'Pneu Seminovo')
+                            THEN itens_os.quantidade
+                            ELSE 0
+                        END
+                    ) AS pneus
+
+                FROM itens_os
+
+                LEFT JOIN produtos
+                    ON produtos.id = itens_os.produto_id
+
+                GROUP BY itens_os.os_id
+            ) AS itens_calculados
+                ON itens_calculados.os_id = ordem_servico.id
+
+            WHERE usuarios.nivel_acesso IN ('vendedor', 'admin')
+        ";
+
+        // Filtrar um vendedor específico, se selecionado
+        if ($vendedor !== '') {
+            $sql .= " AND usuarios.id_usuario = ?";
+        }
+
+        $sql .= "
+            GROUP BY
+                usuarios.id_usuario,
+                usuarios.nome
+
+            ORDER BY venda_bruta DESC, usuarios.nome ASC
+        ";
+
+        // Preparar a consulta
+        $stmt = mysqli_prepare($mysqli, $sql);
+
+        if (!$stmt) {
+            die("Erro ao preparar relatório: " . mysqli_error($mysqli));
+        }
+
+        // Vincular os parâmetros
+        if ($vendedor !== '') {
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ssi",
+                $data_inicial,
+                $data_final,
+                $id_vendedor
+            );
+        } else {
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ss",
+                $data_inicial,
+                $data_final
+            );
+        }
+
+        // Executar a consulta
+        if (!mysqli_stmt_execute($stmt)) {
+            die("Erro ao executar relatório: " . mysqli_stmt_error($stmt));
+        }
+
+        $resultado = mysqli_stmt_get_result($stmt);
+
+        // Salvar os resultados na sessão
+        $_SESSION['relatorio'] = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+
+        // Salvar os filtros utilizados
+        $_SESSION['filtros_relatorio'] = [
+            'data_inicial' => $data_inicial,
+            'data_final'   => $data_final,
+            'vendedor'     => $vendedor
+        ];
+
+        mysqli_stmt_close($stmt);
+
+        // Preservar os resultados após o redirecionamento
+        header("Location: ../paginas/relatorio.php?manter=1");
+        exit;
     }
-
 
 ?>

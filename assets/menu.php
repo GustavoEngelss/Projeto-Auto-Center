@@ -54,7 +54,7 @@
                     </li>
 
                     <li class="item-menu">
-                        <a href="../paginas/relatorio.php" class="button-menu" >
+                        <a href="../paginas/relatorio.php?novo=1" class="button-menu" >
                             <span class="icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
                             <span class="txt-link">Relatório</span>   
                         </a>

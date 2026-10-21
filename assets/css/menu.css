@@ -42,9 +42,6 @@ ul li.item-menu:hover{
 ul li.item-menu{
     transition: .3s;
 }
-ul li.ativo{
-    background-color: rgb(255, 89, 80);
-}
 ul li.item-menu .button-menu{
     color: white;
     text-decoration: none;

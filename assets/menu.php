@@ -1,3 +1,42 @@
+<?php
+    // Inicia a sessão
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    require_once __DIR__ . "/../conexao.php";
+
+    // Recupera o ID 
+    $id_usuario = $_SESSION['id'] ?? null;
+
+    // Nome padrão caso não encontre o usuário
+    $nome_usuario = 'Usuário';
+
+    if ($id_usuario !== null) {
+
+        // Busca os dados do usuário logado
+        $sql = "
+            SELECT nome
+            FROM usuarios
+            WHERE id_usuario = ?
+        ";
+
+        $stmt = mysqli_prepare($mysqli, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $id_usuario);
+        mysqli_stmt_execute($stmt);
+
+        $resultado = mysqli_stmt_get_result($stmt);
+        $usuario = mysqli_fetch_assoc($resultado);
+
+        if ($usuario) {
+            $nome_usuario = $usuario['nome'];
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -13,9 +52,7 @@
         <!--Sessão de navegação-->
         <nav class="menu-lateral">
             <form method="POST" action="../controller/princupal.php">
-                <div class="bnt-expandir">
-                    <i class="bi bi-arrows" id="btn-expandir"></i>
-                </div>
+
                 <ul>
 
                     <li class="item-menu">
@@ -65,6 +102,15 @@
                             <span class="icon"><i class="bi bi-arrow-return-left"></i></span>
                             <span class="txt-link">Sair</span>
                         </a>
+                    </li>
+
+                    <li class="item-menu">
+                        <div class="button-menu">
+                            <i class="bi bi-person-circle" id="btn-expandir"></i>
+                            <span class="txt-link">
+                                <?= htmlspecialchars($nome_usuario, ENT_QUOTES, 'UTF-8') ?>
+                            </span>
+                        </div>
                     </li>
 
                 </ul>

@@ -138,7 +138,7 @@
                                 <li class="nav-item">
 
                                     <a class="nav-link" data-toggle="tab" href="#grafico">
-                                        Gráficos 
+                                        Graficos
                                     </a>
 
                                 </li>
@@ -232,9 +232,45 @@
                                 </div>
 
                                 <!--Graficos-->
-                                <div class="tab-pane fade show" id="grafico">
+                                <div class="tab-pane fade" id="grafico">
 
-                                    <h1>grafico</h1>
+                                    <div class="box_info">
+                                        <div class="box-info-single">
+                                            <div class="info-text">
+                                                <h3>Rentabilidade Bruta</h3>
+                                                <i class="bi bi-cash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="box_info">
+                                        <div class="box-info-single">
+                                            <div class="info-text">
+                                                <h3>Rentabilidade Limpa</h3>
+                                                <i class="bi bi-cash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="box_info">
+                                        <div class="box-info-single">
+                                            <div class="info-text">
+                                                <h3>Pneus Vendidos</h3>
+                                                <i class="bi bi-car-front"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="box_info">
+                                        <div class="box-info-single">
+                                            <div class="info-text">
+                                                <h3>Oredens de Serviços</h3>
+                                                <i class="bi bi-file-earmark-bar-graph"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
 
                                 </div>
 

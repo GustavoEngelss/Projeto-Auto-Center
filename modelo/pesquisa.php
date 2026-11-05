@@ -3,6 +3,9 @@
     require_once "../protec.php";
     require_once "../conexao.php";
     require_once "../permissao.php";
+
+    $dados_pesquisa = $_SESSION['dados_pesquisa'] ?? [];
+    unset($_SESSION['dados_pesquisa']);
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +48,7 @@
 
             <?php endif; ?>
 
-            <form method="POST" action="">
+            <form method="POST" action="../controller/acao.php">
 
                 <div class="card">
 
@@ -57,21 +60,21 @@
 
                             <div class="form-group col-md-4">
                                 <label>Numero da O.S</label>
-                                <input type="text" class="form-control" >
+                                <input type="text" name="num-os" class="form-control" >
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label>Placa</label>
-                                <input type="text" class="form-control" >
+                                <input type="text" name="placa" class="form-control" >
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label>Status</label>
-                                <select name="" class="form-control">
+                                <select name="status" class="form-control">
 
                                     <option value="">Ambas</option>
-                                    <option value="">Aberta</option>
-                                    <option value="">Fechada</option>
+                                    <option value="aberta">Aberta</option>
+                                    <option value="encerrada">Fechada</option>
 
                                 </select>
                             </div>
@@ -89,7 +92,7 @@
                         </div>
 
                         <div class="text-right">
-                            <button type="submit" class="btn btn-primary">Buscar</button>
+                            <button type="submit" name="pesquisa" class="btn btn-primary">Buscar</button>
                         </div>
                 
                     </div>
@@ -119,19 +122,19 @@
                                 
                                 <tbody>
 
-                                    <?php if (!empty($dados_relatorio)): ?>
+                                    <?php if(!empty($dados_pesquisa)): ?>
 
-                                        <?php foreach ($dados_relatorio as $linha): ?>
+                                        <?php foreach($dados_pesquisa as $linha): ?>
 
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td><?= htmlspecialchars($linha['id'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($linha['cliente'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($linha['veiculo'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($linha['placa'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($linha['vendedor'] ?? '') ?></td>
+                                                <td>R$ <?= number_format((float)($linha['valor'] ?? 0), 2, ',', '.') ?></td>
+                                                <td><?= htmlspecialchars($linha['status'] ?? '') ?></td>
+                                                <td><?= !empty($linha['data_abertura']) ? date('d/m/Y', strtotime($linha['data_abertura'])) : '' ?></td>
                                             </tr>
 
                                         <?php endforeach; ?>
@@ -139,9 +142,8 @@
                                     <?php else: ?>
 
                                         <tr>
-                                            <td colspan="9" class="text-muted">
-                                                Nenhum pesquisa realizada. Selecione o filtro e clique em
-                                                "Buscar".
+                                            <td colspan="8" class="text-muted">
+                                                Nenhuma pesquisa realizada. Selecione o filtro e clique em "Buscar".
                                             </td>
                                         </tr>
 

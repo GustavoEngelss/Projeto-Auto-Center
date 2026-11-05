@@ -829,7 +829,7 @@
         exit;        
     };
 
-    // API - Apresentar relatório  
+    // API Apresentar relatório  
     if (isset($_POST['relatorio'])) {
 
         $data_inicial = trim($_POST['data_incio'] ?? '');
@@ -993,5 +993,90 @@
         header("Location: ../paginas/relatorio.php?manter=1");
         exit;
     }
+    
+    //API Pesquisa de O.S
+        if (isset($_POST['pesquisa'])) {
+
+        $num_os = $_POST['num-os'] ?? '';
+        $placa = $_POST['placa'] ?? '';
+        $status = $_POST['status'] ?? '';
+        $data_inicial = $_POST['data_incio'] ?? '';
+        $data_final = $_POST['data_fim'] ?? '';
+
+        $sql = "SELECT
+                    os.id,
+                    c.nome AS cliente,
+                    COALESCE(CONCAT(m.nome, '/', mo.nome), 'Avulso') AS veiculo,
+                    os.placa,
+                    u.nome AS vendedor,
+                    os.total AS valor,
+                    os.status,
+                    os.criado_em AS data_abertura
+                FROM ordem_servico os
+                INNER JOIN clientes c ON c.id = os.cliente_id
+                LEFT JOIN usuarios u ON u.id_usuario = os.usuario_id
+                LEFT JOIN marcas m ON m.id = os.marca_id
+                LEFT JOIN modelos mo ON mo.id = os.modelo_id
+                WHERE 1=1";
+
+        $params = [];
+        $types = '';
+
+        if ($num_os != '') {
+            $sql .= " AND os.id = ?";
+            $params[] = $num_os;
+            $types .= 'i';
+        }
+
+        if ($placa != '') {
+            $sql .= " AND os.placa = ?";
+            $params[] = $placa;
+            $types .= 's';
+        }
+
+        if ($status != '') {
+            $sql .= " AND os.status = ?";
+            $params[] = $status;
+            $types .= 's';
+        }
+
+        if ($data_inicial != '') {
+            $sql .= " AND DATE(os.criado_em) >= ?";
+            $params[] = $data_inicial;
+            $types .= 's';
+        }
+
+        if ($data_final != '') {
+            $sql .= " AND DATE(os.criado_em) <= ?";
+            $params[] = $data_final;
+            $types .= 's';
+        }
+
+        if (empty($params)) {
+            $_SESSION['mensagem'] = 'Preencha algum tipo de filtro!';
+            header("Location: ../modelo/pesquisa.php");
+            exit;
+        }
+
+        $sql .= " ORDER BY os.id DESC";
+
+        $stmt = $mysqli->prepare($sql);
+
+        $stmt->bind_param($types, ...$params);
+
+        $stmt->execute();
+
+        $os = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $_SESSION['dados_pesquisa'] = $os;
+
+        if (empty($os)) {
+            $_SESSION['mensagem'] = 'Nenhum resultado encontrado';
+        }
+
+        header("Location: ../modelo/pesquisa.php");
+        exit;
+    }
+
 
 ?>

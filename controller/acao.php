@@ -995,7 +995,7 @@
     }
     
     //API Pesquisa de O.S
-        if (isset($_POST['pesquisa'])) {
+    if (isset($_POST['pesquisa'])) {
 
         $num_os = $_POST['num-os'] ?? '';
         $placa = $_POST['placa'] ?? '';
